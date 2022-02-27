@@ -1,0 +1,6 @@
+// Devices with specific Model
+
+Device 
+| where Model == 'Model'
+// Wildcard
+// | where Model like 'Model%'

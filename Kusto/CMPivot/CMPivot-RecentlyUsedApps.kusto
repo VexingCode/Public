@@ -1,0 +1,5 @@
+// Recently used applications
+
+CCMRecentlyUsedApplications
+| summarize dcount( device ) by ProductName
+| render columnchart

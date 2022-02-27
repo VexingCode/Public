@@ -1,0 +1,4 @@
+// Device by Domain
+
+Device
+| where Domain == 'Domain'

@@ -1,0 +1,11 @@
+// List all Local Users that are Administrators of a machine
+
+Administrators
+| where (ObjectClass == 'User')
+| where (PrinicpalSource == 'Local')
+// Uncomment below to add exclusions
+// Single
+// | where Name !like '%Adminstrator'
+// Multiple
+// | where Name !like '%Administrator'
+// | where Name !like '%ESMAdmin'

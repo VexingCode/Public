@@ -1,0 +1,4 @@
+// Microsoft 365 Apps for Enterprise Semi-Annual ProPlus out of support
+
+Office365ProPlusConfigurations 
+| where VersionToReport < '16.0.11328.20644' and cfgUpdateChannel == 'http://officecdn.microsoft.com/pr/7ffbc6bf-bc32-4f92-8982-f9dd17fd3114'

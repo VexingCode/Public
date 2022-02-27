@@ -1,0 +1,7 @@
+// Find Java on Workstations
+
+InstalledSoftware 
+| where ProductName like '%Java%'
+// Java Auto Updater often gets left behind; ignoring it
+| where ProductName != 'Java Auto Updater' 
+| where Publisher like '%Oracle%'

@@ -1,0 +1,6 @@
+// Check CM WSUS Settings are enabled on a Client
+// If they were written by a high authority, then likely GPO is interfering
+
+CcmLog('WUAHandler') 
+| where LogText contains 'Group policy settings were overwritten by a higher authority'  
+| project Device, LogText, DateTime

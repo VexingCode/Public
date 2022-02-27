@@ -1,0 +1,4 @@
+// Count of applications installed on devices
+
+InstalledSoftware 
+| summarize dcount( Device ) by ProductName

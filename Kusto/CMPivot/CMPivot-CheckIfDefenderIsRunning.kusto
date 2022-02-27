@@ -1,0 +1,7 @@
+// Check if Defender is Running
+
+Service 
+| where (Name == 'windefend') 
+| summarize State=countif(State == 'Running') by Device 
+| summarize NumberOfDevices=count() by iif(State==1,'Running','Not Running') 
+| render piechart with (title='Windows Defender Running')

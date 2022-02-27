@@ -1,0 +1,4 @@
+// Get process, in a specific location, on devices
+
+Process
+| where CommandLine == 'C:\(FOLDER)\(PROCESS).exe'

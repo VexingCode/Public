@@ -1,0 +1,4 @@
+// Patches installed in the last 90 days
+
+QuickFixEngineering
+| where InstalledOn >= ago(90d)

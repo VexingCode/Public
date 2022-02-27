@@ -1,0 +1,4 @@
+// Active file share info, excluding the Admin shares (Share$)
+
+FileShare
+| where Type == 0

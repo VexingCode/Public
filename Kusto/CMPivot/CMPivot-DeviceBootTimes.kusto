@@ -1,0 +1,7 @@
+// Boot time of specific device
+
+SystemBootData
+| where Device == 'DeviceName'
+| project SystemStartTime, BootDuration, OSStart=EventLogStart, GPDuration, UpdateDuration
+| order by SystemStartTime desc
+| render barchart with (kind=stacked, title='Boot times for MyDevice', ytitle='Time (ms)')

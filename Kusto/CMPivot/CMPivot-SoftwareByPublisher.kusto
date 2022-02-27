@@ -1,0 +1,4 @@
+// Find software installed by a publisher
+
+InstalledSoftware 
+| where Publisher like 'Microsoft%'

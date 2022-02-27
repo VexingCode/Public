@@ -1,0 +1,4 @@
+// Device with GUID changed on X date
+
+FileContent('C:\Windows\smscfg.ini')
+| where Content contains 'Last SMSUID Change Date=DD/MM/YYYY'

@@ -1,0 +1,5 @@
+// Devices with specific Service stopped
+
+Service 
+| where Name == 'ServiceName' 
+| where State == 'Stopped'

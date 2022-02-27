@@ -1,2 +1,2 @@
-# Public/PowerShell
-PowerShell scripts.
+# Public/WQL
+WQL queries.

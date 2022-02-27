@@ -1,0 +1,5 @@
+// Dynamic User query for Azure Security Groups
+// This query grabs all users, while attempting to exclude kiosk accounts, Sys accounts, etc.
+// Remove these comments when pasting into the Azure Dynamic Query box
+
+(user.objectId -ne null) -and (user.userType -eq "Member") -and (user.accountEnabled -eq true) -and -not (user.department -in ["Some-Dept-1","Some-Dept-2","Some-Dept-3"])

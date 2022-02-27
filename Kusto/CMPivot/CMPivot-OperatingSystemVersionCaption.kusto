@@ -1,0 +1,5 @@
+// Grab all OS versions and captions (OS name); count() by Version
+
+OperatingSystem 
+| project Version, Caption
+| summarize count() by Version, Caption

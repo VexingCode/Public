@@ -1,0 +1,5 @@
+// Battery status per user
+
+Battery 
+| project Device, EstimatedChargeRemaining, Status 
+|join (Device | project UserName)

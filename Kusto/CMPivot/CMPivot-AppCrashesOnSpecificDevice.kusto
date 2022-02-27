@@ -1,0 +1,4 @@
+// App Craches on specific Device
+
+AppCrash 
+| where (Device == 'DEVICENAME')

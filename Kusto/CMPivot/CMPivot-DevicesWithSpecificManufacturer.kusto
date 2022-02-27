@@ -1,0 +1,6 @@
+// Devices with specific Manufacturer
+
+Device 
+| where Manufacturer == 'Manufacturer'
+// Wildcard
+// | where Manufacturer like 'Manufacturer%'

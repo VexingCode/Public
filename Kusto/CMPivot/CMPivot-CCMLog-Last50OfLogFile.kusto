@@ -1,0 +1,6 @@
+// Get the last 50 lines lines of CCM Log file on a specific device
+
+CcmLog('LogName') 
+| where Device == 'DeviceName'
+| top 50 by DateTime desc
+| project Device, LogText, DateTime
