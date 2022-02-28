@@ -161,8 +161,7 @@
     To Do:
         Create parameter for assigning PowerBI licenses
             Set ValidateSet
-        Add a check for module perms
-            If not, either quit, or install module for CurrentUser (need to test this part)
+        Add a check for elevated console, if not then install the AzureAD module to the current user
 #>
 
 Function Set-LicenseAttribute {
@@ -201,6 +200,13 @@ Function Set-LicenseAttribute {
         [parameter(Mandatory = $false)]
         [switch] $Cloud
     )
+
+    # Check for elevation; set AzureAD module install to CurrentUser if not
+    # Modify the below command to this purpose
+    <# If (!([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+        Write-Warning "You do not have Administrator rights to run this script!`nPlease re-run this script as an Administrator!"
+        Break
+    } #>
 
     Function Install-AzureADModule {
         Write-Verbose 'Grabbing the version of AzureAD from the gallery...'
