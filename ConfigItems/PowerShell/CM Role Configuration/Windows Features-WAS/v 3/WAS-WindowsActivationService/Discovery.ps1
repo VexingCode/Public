@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName WAS-WindowsActivationService).State

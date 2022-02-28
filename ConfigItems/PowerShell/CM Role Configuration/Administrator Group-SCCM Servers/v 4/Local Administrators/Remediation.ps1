@@ -1,0 +1,1 @@
+Add-LocalGroupMember -Name Administrators -Member CORP\SCCM -ErrorAction Ignore

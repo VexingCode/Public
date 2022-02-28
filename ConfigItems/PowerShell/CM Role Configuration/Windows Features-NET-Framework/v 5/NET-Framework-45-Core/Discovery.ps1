@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName NET-Framework-45-Core).State

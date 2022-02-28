@@ -1,0 +1,1 @@
+if (Get-LocalGroupMember -Name Administrators -Member CORP\SCCM -ErrorAction Ignore){$True}else{$False}
