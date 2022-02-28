@@ -1,0 +1,1 @@
+Remove-Item -path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.WindowsSoundRecorder_8wekyb3d8bbwe -ErrorAction SilentlyContinue

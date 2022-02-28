@@ -1,0 +1,1 @@
+Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -Match 'Microsoft.HEIFImageExtension'} | Remove-AppxProvisionedPackage -Online -AllUsers

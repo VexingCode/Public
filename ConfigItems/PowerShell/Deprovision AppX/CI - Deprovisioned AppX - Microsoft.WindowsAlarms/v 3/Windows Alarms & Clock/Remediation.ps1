@@ -1,0 +1,1 @@
+Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -Match 'Microsoft.WindowsAlarms'} | Remove-AppxProvisionedPackage -Online -AllUsers
