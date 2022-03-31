@@ -1,0 +1,4 @@
+// Devices with more than one monitor
+
+DesktopMonitor 
+| summarize dcount(DeviceID) by Device | where dcount_ > 1
