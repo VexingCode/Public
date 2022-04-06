@@ -1,15 +1,32 @@
-OSVersion,WindowsVersion
-10240,Windows 10 - 1507
-10586,Windows 10 - 1511
-14393,Windows 10 - 1607
-15063,Windows 10 - 1703
-16299,Windows 10 - 1709
-17134,Windows 10 - 1803
-17763,Windows 10 - 1809
-18362,Windows 10 - 1903
-18363,Windows 10 - 1909
-19041,Windows 10 - 20H1
-19042,Windows 10 - 20H2
-19043,Windows 10 - 21H1
-19044,Windows 10 - 21H2
-22000,Windows 11 - 21H2
+OSVersion,OSCaption,OSFriendlyName
+10.0.10240,Microsoft Windows 10 Pro,Windows 10 Pro  (1507)
+10.0.10240,Microsoft Windows 10 Enterprise,Windows 10 Enterprise  (1507)
+10.0.10586,Microsoft Windows 10 Pro,Windows 10 Pro (1511)
+10.0.10586,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (1511)
+10.0.14393,Microsoft Windows 10 Pro,Windows 10 Pro (1607)
+10.0.14393,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (1607)
+10.0.14393,Microsoft Windows 10 Enterprise 2016 LTSB,Windows 10 LTSB (1607)
+10.0.15063,Microsoft Windows 10 Pro,Windows 10 Pro (1703)
+10.0.15063,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (1703)
+10.0.16299,Microsoft Windows 10 Pro,Windows 10 Pro (1709)
+10.0.16299,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (1709)
+10.0.17134,Microsoft Windows 10 Pro,Windows 10 Pro (1803)
+10.0.17134,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (1803)
+10.0.17763,Microsoft Windows 10 Pro,Windows 10 Pro (1809)
+10.0.17763,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (1809)
+10.0.17763,Microsoft Windows 10 Enterprise LTSC,Windows 10 LTSC (1809)
+10.0.18362,Microsoft Windows 10 Pro,Windows 10 Pro (1903)
+10.0.18362,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (1903)
+10.0.18363,Microsoft Windows 10 Pro,Windows 10 Pro (1909)
+10.0.18363,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (1909)
+10.0.19041,Microsoft Windows 10 Pro,Windows 10 Pro (2004)
+10.0.19041,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (2004)
+10.0.19042,Microsoft Windows 10 Pro,Windows 10 Pro (20H2)
+10.0.19042,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (20H2)
+10.0.19042,Microsoft Windows 10 IoT Enterprise,Windows 10 IoT (20H2)
+10.0.19043,Microsoft Windows 10 Pro,Windows 10 Pro (21H1)
+10.0.19043,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (21H1)
+10.0.19044,Microsoft Windows 10 Pro,Windows 10 Pro (21H2)
+10.0.19044,Microsoft Windows 10 Enterprise,Windows 10 Enterprise (21H2)
+10.0.22000,Microsoft Windows 11 Pro,Windows 11 Pro (21H2)
+10.0.22000,Microsoft Windows 11 Enterprise,Windows 11 Enterprise (21H2)
