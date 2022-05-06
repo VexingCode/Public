@@ -121,6 +121,36 @@ Function Import-VexingCodeCollections {
     # Generate a new daily CM Schedule
     $colSchedule = New-CMSchedule -DurationInterval Days -DurationCount 0 -RecurInterval Days -RecurCount 1
 
+    # If Dogfood Collections are requested
+    If ($DogfoodCollections) {
+        # Set the path to the OS Collection files
+        $path = 'WQL/Dogfood'
+
+        # Get all of the files in that path
+        $repoFiles = Invoke-RestMethod "https://api.github.com/repos/$user/$repo/contents/$path"
+
+        # Loop through the files found in the repo
+        ForEach ($file in $repoFiles) {
+            # Pull the download_Url, which is the raw content URL
+            $wql = Invoke-RestMethod $file.download_Url
+
+            # Generate a name based off of the preconfigured file name
+            $name = (($file).Name).Replace("Query-","").Replace(".wql","").Replace("-"," ")
+
+            # Create a Collection with a daily sync, based on the generated name
+            New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
+
+            # Detect if ImportPath is specified and if so, move it to the requested folder; if there is a typo it will not be moved
+            # NOTE: If nothing is specified it will be created in "Device Collections" at the top
+            If ($null -ne $ImportPath) {
+                # Get the built collection, as the move step cannot be piped without breaking other pipes
+                $builtCol = Get-CMDeviceCollection -Name $name
+                # Move the collection
+                Move-CMObject -FolderPath "$SiteCode`:\DeviceCollection\$ImportPath" -InputObject $builtCol
+            }
+        }
+    }
+
     # If OS Collections are requested
     If ($OSCollections) {
         # Set the path to the OS Collection files
@@ -134,8 +164,9 @@ Function Import-VexingCodeCollections {
             # Pull the download_Url, which is the raw content URL
             $wql = Invoke-RestMethod $file.download_Url
 
-            # Generate a name based off of the preconfigured file name (only works with this repo)
-            If ($name -contains 'Server') {
+            # Generate a name based off of the preconfigured file name
+            $name = (($file).Name).Replace("Query-","").Replace(".wql","").Replace("-"," ")
+            If ($name -match 'Server') {
                 $name = 'Servers | ' + $name
             }
             Else {
