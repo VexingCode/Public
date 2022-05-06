@@ -1,3 +1,4 @@
+// Not KQL, but also not sure where to put it :D
 // Dynamic User query for Azure Security Groups
 // This query grabs all users, while attempting to exclude kiosk accounts, Sys accounts, etc.
 // Remove these comments when pasting into the Azure Dynamic Query box
