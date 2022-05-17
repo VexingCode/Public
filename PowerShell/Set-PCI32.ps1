@@ -30,7 +30,7 @@
 
         NOTE: This option does not exist for Ciphers, since Ciphers only use "Enabled"
     -Cipher
-        This parameter specifies the Cipher Suite you would like to validate or remediate.
+        This parameter specifies the Cipher you would like to validate or remediate.
         Valid options are:
             AES 128/128 - This will ENABLE AES 128/128 if -Remediate is specified
             AES 256/256 - This will ENABLE AES 256/256 if -Remediate is specified
@@ -44,6 +44,22 @@
             RC4 56/128 - This will DISABLE RC4 56/128 if -Remediate is specified
             RC4 64/128 - This will DISABLE RC4 64/128 1.0 if -Remediate is specified
             Triple DES 168 - This will ENABLE Triple DES 168 if -Remediate is specified
+    -CipherSuite
+        This parameter specified the Cipher Suite you would like to validate or remediate.
+        Valid options are:
+            TLS_AES_256_GCM_SHA384
+            TLS_AES_128_GCM_SHA256
+            TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
+            TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+            TLS_RSA_WITH_3DES_EDE_CBC_SHA
+            TLS_PSK_WITH_AES_256_GCM_SHA384
+            TLS_PSK_WITH_AES_128_GCM_SHA256
+            TLS_PSK_WITH_AES_256_CBC_SHA384
+            TLS_PSK_WITH_AES_128_CBC_SHA256
+            TLS_PSK_WITH_NULL_SHA384
+            TLS_PSK_WITH_NULL_SHA256
+            TLS_RSA_WITH_NULL_SHA256
+            TLS_RSA_WITH_NULL_SHA
     -Toggle (UNUSED: CURRENTLY IN DEV)
         This parameter specifies whether to detect or remediate if the setting is enabled or 
         disabled.
@@ -94,27 +110,59 @@
     To-Do:
         - Add support for Intune Proactive Remediations
         - Instead of just disabling, add a toggle for Enable/Disable
+        - Add Detection/Remediation for CipherSuites
 #>
 
 Function Set-PCI32 {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory=$true,ParameterSetName="Protocol",Position=0)]
+        [Parameter(Mandatory=$true,ParameterSetName="ProtocolSet",Position=0)]
         [ValidateSet('Multi-Protocol Unified Hello','PCT 1.0','SSL 2.0','SSL 3.0','TLS 1.0','TLS 1.1','TLS 1.2')]
         [string]
         $Protocol,
-        [Parameter(Mandatory=$true,ParameterSetName="Protocol",Position=1)]
+        [Parameter(Mandatory=$true,ParameterSetName="ProtocolSet",Position=1)]
         [ValidateSet('Client','Server')]
         [string]
         $SubProtocol,
-        [Parameter(Mandatory=$true,ParameterSetName="Protocol",Position=2)]
+        [Parameter(Mandatory=$true,ParameterSetName="ProtocolSet",Position=2)]
         [ValidateSet('Enabled','DisabledByDefault')]
         [string]
         $ProtocolProperty,
-        [Parameter(Mandatory=$true,ParameterSetName="Cipher",Position=0)]
-        [ValidateSet('AES 128/128','AES 256/256','DES 56/56','NULL','RC2 128/128','RC2 40/128','RC2 56/128','RC4 128/128','RC4 40/128','RC4 56/128','RC4 64/128','Triple DES 168')]
+        [Parameter(Mandatory=$true,ParameterSetName="CipherSet",Position=0)]
+        [ValidateSet(
+            'AES 128/128',
+            'AES 256/256',
+            'DES 56/56',
+            'NULL',
+            'RC2 128/128',
+            'RC2 40/128',
+            'RC2 56/128',
+            'RC4 128/128',
+            'RC4 40/128',
+            'RC4 56/128',
+            'RC4 64/128',
+            'Triple DES 168'
+        )]
         [string]
         $Cipher,
+        [Parameter(Mandatory=$true,ParameterSetName="CipherSuiteSet",Position=0)]
+        [ValidateSet(
+            'TLS_AES_256_GCM_SHA384',
+            'TLS_AES_128_GCM_SHA256',
+            'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384',
+            'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256',
+            'TLS_RSA_WITH_3DES_EDE_CBC_SHA',
+            'TLS_PSK_WITH_AES_256_GCM_SHA384',
+            'TLS_PSK_WITH_AES_128_GCM_SHA256',
+            'TLS_PSK_WITH_AES_256_CBC_SHA384',
+            'TLS_PSK_WITH_AES_128_CBC_SHA256',
+            'TLS_PSK_WITH_NULL_SHA384',
+            'TLS_PSK_WITH_NULL_SHA256',
+            'TLS_RSA_WITH_NULL_SHA256',
+            'TLS_RSA_WITH_NULL_SHA'
+        )]
+        [string]
+        $CipherSuite,
         [Parameter()]
         [ValidateSet('Enable','Disable')]
         [string]
@@ -127,7 +175,8 @@ Function Set-PCI32 {
     # Set the HKLM
     $hklm = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\'
 
-    If ($Protocol) {
+    # Start Protocol section
+    If ($ProtocolSet) {
         # Build the protocols path
         $protocolPath = $hklm + "Protocols\" + $Protocol + "\" + $SubProtocol
 
@@ -197,8 +246,9 @@ Function Set-PCI32 {
                 $true
             }
         }
-    }
-    Else {
+    } # End Protocol section
+    # Start Cipher section
+    ElseIf ($CipherSet) {
         # Build the ciphers path
         $cipherKey = "SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers"
         $cipherPath = $hklm + 'Ciphers\' + $Cipher
@@ -261,6 +311,26 @@ Function Set-PCI32 {
                 $true
             }
         }
-
-    }
+    } # End Cipher section
+    # Start Cipher Suite section
+    Else {
+        # Check if the Cipher Suite is enabled
+        Write-Host "CipherSuite: $CipherSuite"
+        If (Get-TlsCipherSuite -Name $CipherSuite) {
+            # The Cipher was detected as enabled
+            If ($Remediate) {
+                # Remediation requested
+                # Disabling the Cipher Suite
+                Disable-TlsCipherSuite -Name $CipherSuite
+            }
+            Else {
+                # It is enabled, and remediation not requested; report $false
+                $false
+            }
+        }
+        Else {
+            # The Cipher Suite is not detected; return compliant
+            $true
+        }
+    } # End Cipher Suite section
 }
