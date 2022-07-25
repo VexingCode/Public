@@ -20,9 +20,13 @@
     Name:           Set-LocalKioskAccount.ps1
     Author:         Ahnamataeus Vex
     Version:        1.0.0
-    Release Date:   2022-07-20
+    Release Date:   2022.07.20
+        Updated:
+            Version 1.0.1: 2022.07.25
+                Added the registry key to ForceAutoLogon
 #>
 
+<# Uncomment if using as a CM app
 [CmdletBinding()]
 param (
     [Parameter()]
@@ -32,6 +36,7 @@ param (
     [switch]
     $Repair
 )
+#>
 
 Function Set-LocalKioskAccount {
     [CmdletBinding()]
@@ -94,6 +99,16 @@ Function Set-LocalKioskAccount {
         # Run the Autologon .exe
         Start-Process -FilePath "$itdToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
 
+        # Test for the ForceAutoLogon property; create/set it, if not
+        If (Get-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -ErrorAction SilentlyContinue) {
+            # Property found; set the property value to 1
+            Set-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -Value 1
+        }
+        Else {
+            # Property not found; create it and set the value to 1
+            New-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -PropertyType DWord -Value 1
+        }
+
         # Test if the $cosRegKey\AutoLogon exists; create it, if not
         If (!(Test-Path $cosRegKey\Autologon -ErrorAction SilentlyContinue)) {
             New-Item -Path $cosRegKey\Autologon -Force | Out-Null
@@ -143,6 +158,11 @@ Function Set-LocalKioskAccount {
             Set-ItemProperty -Path $winlogonRegKey -Name AutoAdminLogon -Value 0
         }
 
+        # Set the ForceAutoLogon to 0
+        If ((Get-ItemPropertyValue -Path $winlogonRegKey -Name ForceAutoLogon) -ne 0) {
+            Set-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -Value 0
+        }
+
         ##################
         ## Repair Steps ##
         ##################
@@ -160,6 +180,16 @@ Function Set-LocalKioskAccount {
 
         # Run the Autologon .exe
         Start-Process -FilePath "$itdToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
+
+        # Test for the ForceAutoLogon property; create/set it, if not
+        If (Get-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -ErrorAction SilentlyContinue) {
+            # Property found; set the property value to 1
+            Set-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -Value 1
+        }
+        Else {
+            # Property not found; create it and set the value to 1
+            New-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -PropertyType DWord -Value 1
+        }
 
         # Test if the $cosRegKey\AutoLogon exists; create it, if not
         If (!(Test-Path $cosRegKey\Autologon -ErrorAction SilentlyContinue)) {
@@ -180,3 +210,12 @@ Function Set-LocalKioskAccount {
     Clear-Variable -Name "password"
 
 }
+
+<# Uncomment if using as a CM app
+If ($New) {
+    Set-LocalKioskAccount -NewKiosk -KioskName "CoSKiosk"
+}
+ElseIf ($Repair) {
+    Set-LocalKioskAccount -RepairKiosk -KioskName "CoSKiosk"
+}
+#>
