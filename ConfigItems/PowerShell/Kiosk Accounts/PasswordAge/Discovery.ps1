@@ -34,4 +34,4 @@ Function Test-LocalUserPasswordExpiration {
     }
 }
 
-Test-LocalUserPasswordExpiration -LocalUser "CoSKiosk" -DaysPassed 90
+Test-LocalUserPasswordExpiration -LocalUser "Kiosk" -DaysPassed 90

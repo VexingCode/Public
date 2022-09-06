@@ -15,7 +15,7 @@
 
     C:\Windows\System32> Set-LocalKioskAccount -RepairKiosk -KioskName "TestAcct"
 .OUTPUTS
-    Regkeys are written under HKLM:\SOFTWARE\CoS\Autologon
+    Regkeys are written under HKLM:\SOFTWARE\CNT\Autologon
 .NOTES
     Name:           Set-LocalKioskAccount.ps1
     Author:         Ahnamataeus Vex
@@ -54,20 +54,20 @@ Function Set-LocalKioskAccount {
 
     # Set vars
     $AutoLogonDomain = $env:COMPUTERNAME
-    $cosRegKey = 'HKLM:\SOFTWARE\CoS'
+    $CNTRegKey = 'HKLM:\SOFTWARE\CNT'
     $alProperties = 'AL-Installed','AL-KioskName','AL-Timestamp'
     $winlogonRegKey = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
     $winlogonProperties = 'DefaultDomainName','DefaultUserName'
-    $itdToolsDir = "$env:ProgramData\ITD\Tools"
+    $CNTToolsDir = "$env:ProgramData\CNT\Tools"
 
-    # Check for the existence of the ITD\Tools directory, and create it if missing
-    If (!(Test-Path $itdToolsDir)) {
-        New-Item $itdToolsDir -ItemType Directory
+    # Check for the existence of the CNT\Tools directory, and create it if missing
+    If (!(Test-Path $CNTToolsDir)) {
+        New-Item $CNTToolsDir -ItemType Directory
     }
 
-    # Validate the Autologon64.exe file is in the ITD\Tools directory; copy it over if its not
-    If (!(Test-Path $itdToolsDir\Autologon64.exe)) {
-        Copy-Item -Path "$PSScriptRoot\Autologon64.exe" -Destination $itdToolsDir
+    # Validate the Autologon64.exe file is in the CNT\Tools directory; copy it over if its not
+    If (!(Test-Path $CNTToolsDir\Autologon64.exe)) {
+        Copy-Item -Path "$PSScriptRoot\Autologon64.exe" -Destination $CNTToolsDir
     }
 
     # Function to generate an obfuscated password with the a random length between 14 and 128, and 0 non-alphanumeric characters
@@ -97,7 +97,7 @@ Function Set-LocalKioskAccount {
         }
 
         # Run the Autologon .exe
-        Start-Process -FilePath "$itdToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
+        Start-Process -FilePath "$CNTToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
 
         # Test for the ForceAutoLogon property; create/set it, if not
         If (Get-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -ErrorAction SilentlyContinue) {
@@ -109,15 +109,15 @@ Function Set-LocalKioskAccount {
             New-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -PropertyType DWord -Value 1
         }
 
-        # Test if the $cosRegKey\AutoLogon exists; create it, if not
-        If (!(Test-Path $cosRegKey\Autologon -ErrorAction SilentlyContinue)) {
-            New-Item -Path $cosRegKey\Autologon -Force | Out-Null
+        # Test if the $CNTRegKey\AutoLogon exists; create it, if not
+        If (!(Test-Path $CNTRegKey\Autologon -ErrorAction SilentlyContinue)) {
+            New-Item -Path $CNTRegKey\Autologon -Force | Out-Null
         }
 
         # Create the Autologon keys
-        New-ItemProperty $cosRegKey\Autologon -Name AL-Installed -PropertyType String -Value "True" -Force | Out-Null
-        New-ItemProperty $cosRegKey\Autologon -Name AL-KioskName -PropertyType String -Value $KioskName -Force | Out-Null
-        New-ItemProperty $cosRegKey\Autologon -Name AL-Timestamp -PropertyType String -Value (Get-Date) -Force | Out-Null
+        New-ItemProperty $CNTRegKey\Autologon -Name AL-Installed -PropertyType String -Value "True" -Force | Out-Null
+        New-ItemProperty $CNTRegKey\Autologon -Name AL-KioskName -PropertyType String -Value $KioskName -Force | Out-Null
+        New-ItemProperty $CNTRegKey\Autologon -Name AL-Timestamp -PropertyType String -Value (Get-Date) -Force | Out-Null
 
         # Clear the password variables
         Clear-Variable -Name "password"
@@ -130,13 +130,13 @@ Function Set-LocalKioskAccount {
         ## Pre-Repair Steps ##
         ######################
 
-        # Validate the Autologon64.exe file is in the ITD\Tools directory; delete\recopy it if it is, copy it over if its not
-        If (Test-Path $itdToolsDir\Autologon64.exe) {
-            Remove-Item -Path "$itdToolsDir\Autologon64.exe" -Force
-            Copy-Item -Path "$PSScriptRoot\Autologon64.exe" -Destination $itdToolsDir
+        # Validate the Autologon64.exe file is in the CNT\Tools directory; delete\recopy it if it is, copy it over if its not
+        If (Test-Path $CNTToolsDir\Autologon64.exe) {
+            Remove-Item -Path "$CNTToolsDir\Autologon64.exe" -Force
+            Copy-Item -Path "$PSScriptRoot\Autologon64.exe" -Destination $CNTToolsDir
         }
         Else {
-            Copy-Item -Path "$PSScriptRoot\Autologon64.exe" -Destination $itdToolsDir
+            Copy-Item -Path "$PSScriptRoot\Autologon64.exe" -Destination $CNTToolsDir
         }
 
         # Nuke the Default* property values, if not empty
@@ -148,8 +148,8 @@ Function Set-LocalKioskAccount {
 
         # Nuke the AL- property values
         ForEach ($alProperty in $alProperties) {
-            If (Get-ItemPropertyValue -Path $cosRegKey\Autologon -Name $alProperty -ErrorAction SilentlyContinue) { 
-                Clear-ItemProperty -Path $cosRegKey\Autologon -Name $alProperty
+            If (Get-ItemPropertyValue -Path $CNTRegKey\Autologon -Name $alProperty -ErrorAction SilentlyContinue) { 
+                Clear-ItemProperty -Path $CNTRegKey\Autologon -Name $alProperty
             }
         }
 
@@ -179,7 +179,7 @@ Function Set-LocalKioskAccount {
         }
 
         # Run the Autologon .exe
-        Start-Process -FilePath "$itdToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
+        Start-Process -FilePath "$CNTToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
 
         # Test for the ForceAutoLogon property; create/set it, if not
         If (Get-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -ErrorAction SilentlyContinue) {
@@ -191,15 +191,15 @@ Function Set-LocalKioskAccount {
             New-ItemProperty -Path $winlogonRegKey -Name ForceAutoLogon -PropertyType DWord -Value 1
         }
 
-        # Test if the $cosRegKey\AutoLogon exists; create it, if not
-        If (!(Test-Path $cosRegKey\Autologon -ErrorAction SilentlyContinue)) {
-            New-Item -Path $cosRegKey\Autologon -Force | Out-Null
+        # Test if the $CNTRegKey\AutoLogon exists; create it, if not
+        If (!(Test-Path $CNTRegKey\Autologon -ErrorAction SilentlyContinue)) {
+            New-Item -Path $CNTRegKey\Autologon -Force | Out-Null
         }
 
         # Create the Autologon keys
-        New-ItemProperty $cosRegKey\Autologon -Name AL-Installed -PropertyType String -Value "True" -Force | Out-Null
-        New-ItemProperty $cosRegKey\Autologon -Name AL-KioskName -PropertyType String -Value $KioskName -Force | Out-Null
-        New-ItemProperty $cosRegKey\Autologon -Name AL-Timestamp -PropertyType String -Value (Get-Date) -Force | Out-Null
+        New-ItemProperty $CNTRegKey\Autologon -Name AL-Installed -PropertyType String -Value "True" -Force | Out-Null
+        New-ItemProperty $CNTRegKey\Autologon -Name AL-KioskName -PropertyType String -Value $KioskName -Force | Out-Null
+        New-ItemProperty $CNTRegKey\Autologon -Name AL-Timestamp -PropertyType String -Value (Get-Date) -Force | Out-Null
 
         # Clear the password variables
         Clear-Variable -Name "password"
@@ -213,9 +213,9 @@ Function Set-LocalKioskAccount {
 
 <# Uncomment if using as a CM app
 If ($New) {
-    Set-LocalKioskAccount -NewKiosk -KioskName "CoSKiosk"
+    Set-LocalKioskAccount -NewKiosk -KioskName "CNTKiosk"
 }
 ElseIf ($Repair) {
-    Set-LocalKioskAccount -RepairKiosk -KioskName "CoSKiosk"
+    Set-LocalKioskAccount -RepairKiosk -KioskName "CNTKiosk"
 }
 #>
