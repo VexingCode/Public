@@ -13,9 +13,9 @@
 #==========================================================================
 
 # Define variables
-$Directory = "C:\"
-$KeyFile = Join-Path $Directory  "DTK.key"
-$PasswordFile = Join-Path $Directory "DTP.txt"
+$Directory = "C:\Temp"
+$KeyFile = Join-Path $Directory  "aSAK.key"
+$PasswordFile = Join-Path $Directory "aSAP.txt"
 
 # Text for the console
 Write-Host "CREATE SECURE PASSWORD FILE"
