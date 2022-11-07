@@ -1,0 +1,17 @@
+POST https://graph.microsoft.com/v1.0/groups
+Content-type: application/json
+
+{
+    "description": "Group description.",
+    "displayName": "Group-Name",
+    "mailEnabled": false,
+    "mailNickname": "mailNick",
+    "securityEnabled": true,
+    "isAssignableToRole": true,
+    "owners@odata.bind": [
+        "https://graph.microsoft.com/v1.0/users/User-GUID-Here"
+    ],
+    "members@odata.bind": [
+        "https://graph.microsoft.com/v1.0/users/User-GUID-Here"
+    ]
+}
