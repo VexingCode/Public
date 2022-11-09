@@ -9,7 +9,13 @@
 .INPUTS
     None, but edit the $blPropertyValue if necessary.
 .OUTPUTS
-    None
+    Drive decrypted.
+    C:\> Disable-BitlockerOSVolume.ps1
+    Bitlocker found enabled on Operating System drive; decrypting.
+
+    Drive already decrypted.
+    C:\> Disable-BitlockerOSVolume.ps1
+    Bitlocker not enabled on the Operating System drive.
 .NOTES
     Name:           Disable-BitlockerOSVolume.ps1
     Author:         Ahnamataeus Vex
@@ -18,7 +24,7 @@
 #>
 
 # Set vars
-$cosRegKey = 'HKLM:\SOFTWARE\CoS'
+$cntRegKey = 'HKLM:\SOFTWARE\CNT'
 $blProperty = 'BL-Decrypted'
 $blPropertyValue = '1'
 
@@ -38,23 +44,23 @@ Function Disable-BitlockerOSVolume {
     }
 }
 
-# Test if the $cosRegKey\Bitlocker registry key exists
-If (!(Test-Path $cosRegKey\Bitlocker -ErrorAction SilentlyContinue)) {
+# Test if the $cntRegKey\Bitlocker registry key exists
+If (!(Test-Path $cntRegKey\Bitlocker -ErrorAction SilentlyContinue)) {
     # Registry key does not exist; creating it
-    New-Item -Path $cosRegKey\Bitlocker -Force | Out-Null
+    New-Item -Path $cntRegKey\Bitlocker -Force | Out-Null
 
     # Disable Bitlocker, or ignore if already decrypted
     Disable-BitlockerOSVolume
 
     # Write the key showing its been decrypted
-    New-ItemProperty $cosRegKey\Bitlocker -Name $blProperty -PropertyType String -Value $blPropertyValue -Force | Out-Null
+    New-ItemProperty $cntRegKey\Bitlocker -Name $blProperty -PropertyType String -Value $blPropertyValue -Force | Out-Null
     exit 0
 }
 Else {
     # Validate that the Bitlocker property actually exists with Get-ItemProperty; Get-ItemPropertyValue throws an irrepressible error
-    If (Get-ItemProperty $cosRegKey\Bitlocker -Name $blProperty -ErrorAction SilentlyContinue) {
+    If (Get-ItemProperty $cntRegKey\Bitlocker -Name $blProperty -ErrorAction SilentlyContinue) {
         # Bitlocker registry key exists; validate if its the same value as the script
-        If ((Get-ItemPropertyValue $cosRegKey\Bitlocker -Name $blProperty) -eq $blPropertyValue) {
+        If ((Get-ItemPropertyValue $cntRegKey\Bitlocker -Name $blProperty) -eq $blPropertyValue) {
             # The values match; the drive has been decrypted already
             exit 0
         }
@@ -63,7 +69,7 @@ Else {
             Disable-BitlockerOSVolume
 
             # Set the key to the new value
-            Set-ItemProperty $cosRegKey\Bitlocker -Name $blProperty -Value $blPropertyValue -Force | Out-Null
+            Set-ItemProperty $cntRegKey\Bitlocker -Name $blProperty -Value $blPropertyValue -Force | Out-Null
             exit 0
         }
     }
@@ -73,7 +79,7 @@ Else {
         Disable-BitlockerOSVolume
 
         # Write the key showing its been decrypted
-        New-ItemProperty $cosRegKey\Bitlocker -Name $blProperty -PropertyType String -Value $blPropertyValue -Force | Out-Null
+        New-ItemProperty $cntRegKey\Bitlocker -Name $blProperty -PropertyType String -Value $blPropertyValue -Force | Out-Null
         exit 0
     }
 }
