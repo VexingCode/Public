@@ -25,6 +25,9 @@
     Author:         Jason Kuhn, Ahnamataeus Vex
     Version:        1.0.0
     Release Date:   2022-07-15
+        Updated:
+            Version 1.0.1: 2022-11-29
+                Changed the name of the output file. Prefixed "GPOSearch-Str-" so it would be easier to find/get grouped together.
 #>
 
 Function Get-GPOByString {
@@ -48,7 +51,7 @@ Function Get-GPOByString {
   $NearestDC = (Get-ADDomainController -Discover -NextClosestSite).Name
 
   # Set the CSV location and name
-  $csv = "$ExportPath\$SearchString-GPOsearchResults.csv"
+  $csv = "$ExportPath\GPOSearch-Str-$SearchString.csv"
 
   # Create a CSV file with the search string in the file name, containing Name and ID of the GPO
   If (Test-Path $ExportPath) {
