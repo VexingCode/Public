@@ -7,7 +7,7 @@ Get-NetFirewallRule -DisplayGroup "Windows Management Instrumentation (WMI)" -Di
 Get-NetFirewallRule -DisplayGroup "File and Printer Sharing" -Direction Inbound | Set-NetFirewallRule -Enabled True -Direction Inbound
 
 # Inbound: Remote Control
-New-NetFirewallRule -Direction Inbound -InterfaceType Any -Name "CM-Remote-Control-TCP-In" -InterfaceType Any -Protocol TCP -LocalPort 2701 -Profile Domain,Private -Program 'C:\WINDOWS\CCM\RemCtrl\CmRcService.exe' -DisplayName 'ConfigMgr Remote Control' -Description 'Port exclusion for the ConfigMgr Remote Control tool.' -Group 'ConfigMgr'
+New-NetFirewallRule -Direction Inbound -InterfaceType Any -Name "CM-Remote-Control-TCP-In" -Protocol TCP -LocalPort 2701 -Profile Domain,Private -Program 'C:\WINDOWS\CCM\RemCtrl\CmRcService.exe' -DisplayName 'ConfigMgr Remote Control' -Description 'Port exclusion for the ConfigMgr Remote Control tool.' -Group 'ConfigMgr'
 
 # Outbound: File and Printer Sharing (Group)
 Get-NetFirewallRule -DisplayGroup "File and Printer Sharing" -Direction Outbound | Set-NetFirewallRule -Enabled True -Direction Outbound
