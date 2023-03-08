@@ -1,64 +1,65 @@
-<#
-.SYNOPSIS
-    Searches the PackageIndex registries for validated FoDs.
-.DESCRIPTION
-    This function searches the PackageIndex registry keys for a matching registry key, based on the validated
-    name from the -FeatureName parameter. This function can be run without Administrative permissions, whereas
-    Get-WindowsCapability cannot. When deploying applications, in ConfigMgr, to users the detection script is
-    run under their permissions. Without Admin, Get-WindowsCapability returns as "Not Applicable."
-    
-    This is a quick function built to use as a Detection Method for ConfigMgr (hence the blank) and Intune (exit codes).
-.EXAMPLE
-    PS C:\> Get-WindowsFoD -FeatureName 'Active Directory Tools'
-    This searches for Active Directory Tools and returns output if found or not.
-
-    PS C:\> Get-WindowsFoD -FeatureName 'Active Directory Tools' -ConfigMgr
-    This searches for Active Directory Tools and returns $true if found, or nothing if not.
-
-    PS C:\> Get-WindowsFoD -FeatureName 'Active Directory Tools' -Intune
-    This searches for Active Directory Tools and returns an output with Exit 0 if found, or an output with Exit 1 if not.
-.INPUTS
-    -FeatureName
-    This parameter specifies the exact name of the FoD you are looking for. It is a validated set, meaning it must
-    be one of the below values. You can tab-complete and tab-cycle through this list after specifying the parameter.
-    It is not case sensitive.
-        'Active Directory Tools'
-        'BitLocker Recovery Tools'
-        'Certificate Services Tools'
-        'DHCP Tools'
-        'DNS Tools'
-        'Failover Cluster Management Tools'
-        'File Services Tools'
-        'Group Policy Management Tools'
-        'IPAM Client Tools'
-        'LLDP Tools'
-        'Network Controller Tools'
-        'Network Load Balancing Tools'
-        'Remote Access Management Tools'
-        'Remote Desktop Services Tools'
-        'Server Manager Tools'
-        'Shielded VM Tools'
-        'Storage Migration Service Management Tools'
-        'Storage Replica Tools'
-        'System Insights Management Tools'
-        'Volume Activation Tools'
-        'WSUS Tools'
-
-    -ConfigMgr
-        This parameter specifies that you want the output to be compliant for a ConfigMgr detection method.
-
-    -Intune
-        This parameter specifies that you want the output to be compliant for an Intune detection method.
-.OUTPUTS
-    Compliance or not.
-.NOTES
-    Name:         Get-WindowsFoD.ps1
-    Author:       Ahnmataeus Vex
-    Version:      1.0.0
-    Release Date: 2021-12-20
-#>
-
 Function Get-WindowsFoD {
+
+    <#
+    .SYNOPSIS
+        Searches the PackageIndex registries for validated FoDs.
+    .DESCRIPTION
+        This function searches the PackageIndex registry keys for a matching registry key, based on the validated
+        name from the -FeatureName parameter. This function can be run without Administrative permissions, whereas
+        Get-WindowsCapability cannot. When deploying applications, in ConfigMgr, to users the detection script is
+        run under their permissions. Without Admin, Get-WindowsCapability returns as "Not Applicable."
+        
+        This is a quick function built to use as a Detection Method for ConfigMgr (hence the blank) and Intune (exit codes).
+    .EXAMPLE
+        PS C:\> Get-WindowsFoD -FeatureName 'Active Directory Tools'
+        This searches for Active Directory Tools and returns output if found or not.
+
+        PS C:\> Get-WindowsFoD -FeatureName 'Active Directory Tools' -ConfigMgr
+        This searches for Active Directory Tools and returns $true if found, or nothing if not.
+
+        PS C:\> Get-WindowsFoD -FeatureName 'Active Directory Tools' -Intune
+        This searches for Active Directory Tools and returns an output with Exit 0 if found, or an output with Exit 1 if not.
+    .INPUTS
+        -FeatureName
+        This parameter specifies the exact name of the FoD you are looking for. It is a validated set, meaning it must
+        be one of the below values. You can tab-complete and tab-cycle through this list after specifying the parameter.
+        It is not case sensitive.
+            'Active Directory Tools'
+            'BitLocker Recovery Tools'
+            'Certificate Services Tools'
+            'DHCP Tools'
+            'DNS Tools'
+            'Failover Cluster Management Tools'
+            'File Services Tools'
+            'Group Policy Management Tools'
+            'IPAM Client Tools'
+            'LLDP Tools'
+            'Network Controller Tools'
+            'Network Load Balancing Tools'
+            'Remote Access Management Tools'
+            'Remote Desktop Services Tools'
+            'Server Manager Tools'
+            'Shielded VM Tools'
+            'Storage Migration Service Management Tools'
+            'Storage Replica Tools'
+            'System Insights Management Tools'
+            'Volume Activation Tools'
+            'WSUS Tools'
+
+        -ConfigMgr
+            This parameter specifies that you want the output to be compliant for a ConfigMgr detection method.
+
+        -Intune
+            This parameter specifies that you want the output to be compliant for an Intune detection method.
+    .OUTPUTS
+        Compliance or not.
+    .NOTES
+        Name:         Get-WindowsFoD.ps1
+        Author:       Ahnmataeus Vex
+        Version:      1.0.0
+        Release Date: 2021-12-20
+    #> 
+
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)]
