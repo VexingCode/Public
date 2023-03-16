@@ -6,6 +6,6 @@ select SMS_R_SYSTEM.ResourceID,
     SMS_R_SYSTEM.Client
 from SMS_R_System
     inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceId = SMS_R_System.ResourceId
-where SMS_G_System_COMPUTER_SYSTEM.Manufacturer = "HP"
+where SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteBook x360 1030 G8"
     or
-SMS_G_System_COMPUTER_SYSTEM.Manufacturer = "Hewlett-Packard"
+SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteBook x360 1030 G8 Notebook PC"

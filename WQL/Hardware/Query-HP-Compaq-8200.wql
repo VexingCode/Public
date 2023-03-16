@@ -7,3 +7,5 @@ select SMS_R_SYSTEM.ResourceID,
 from SMS_R_System
     inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceId = SMS_R_System.ResourceId
 where SMS_G_System_COMPUTER_SYSTEM.Model = "HP Compaq 8200 Elite USDT PC"
+    or
+SMS_G_System_COMPUTER_SYSTEM.Model = "HP Compaq 8200 Elite CMT PC"
