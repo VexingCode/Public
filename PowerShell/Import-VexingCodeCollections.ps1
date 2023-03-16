@@ -22,10 +22,12 @@
     A switch that specifies you would like to import the Client MDE Health collections.
 .PARAMETER DogfoodCollections
     A switch that specifies you would like to import the Dogfood collections.
-.PARAMETER CMRoleCollections
+.PARAMETER CMRolesCollections
     A switch that specifies you would like to import the ConfigMgr Role collections.
-.PARAMETER Hardware Collections
+.PARAMETER HardwareCollections
     A switch that specifies you would like to import the Hardware collections.
+.PARAMETER ImportPath
+    The path that you want the devices to be dropped into. The structure for this command is: "Folder\Folder"
 .EXAMPLE
     Import-VexingCodeCollections -SiteCode 'CNT' -SiteServer 'MEMCMYo' -OSCollections
     
@@ -36,8 +38,6 @@
 
     This will import the OS Collections into your ConfigMgr instance. They will have the limited collection of
     "All Workstation and Servers" then be moved to the 'CNT:\DeviceCollection\Testing\Import' folder.
-    
-    The structure for this command is: "Folder\Folder"
 .NOTES
         Name:      Import-VexingCodeCollections.ps1
         Author:    Ahnamataeus Vex
@@ -78,10 +78,16 @@ Function Import-VexingCodeCollections {
         $DogfoodCollections,
         [Parameter()]
         [switch]
-        $CMRoleCollections,
+        $CMRolesCollections,
         [Parameter()]
         [switch]
         $HardwareCollections,
+        [Parameter()]
+        [switch]
+        $FirmwareCollections,
+        [Parameter()]
+        [switch]
+        $SoftwareCollections,
         [Parameter()]
         [string]
         $ImportPath
@@ -114,41 +120,19 @@ Function Import-VexingCodeCollections {
     $repo = 'Public'
 
     # Set the limiting collection to "All Systems" if $null
+    # Not working, figure out why
     If ($null -eq $LimitingCollection) {
         $LimitingCollection = "All Systems"
     }
 
+    # Set regex for later use
+    $regex = [Regex]::new("(?<=Query_).*?(?=_)")
+
     # Generate a new daily CM Schedule
-    $colSchedule = New-CMSchedule -DurationInterval Days -DurationCount 0 -RecurInterval Days -RecurCount 1
-
-    # If Dogfood Collections are requested
-    If ($DogfoodCollections) {
-        # Set the path to the OS Collection files
-        $path = 'WQL/Dogfood'
-
-        # Get all of the files in that path
-        $repoFiles = Invoke-RestMethod "https://api.github.com/repos/$user/$repo/contents/$path"
-
-        # Loop through the files found in the repo
-        ForEach ($file in $repoFiles) {
-            # Pull the download_Url, which is the raw content URL
-            $wql = Invoke-RestMethod $file.download_Url
-
-            # Generate a name based off of the preconfigured file name
-            $name = (($file).Name).Replace("Query-","").Replace(".wql","").Replace("-"," ")
-
-            # Create a Collection with a daily sync, based on the generated name
-            New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
-
-            # Detect if ImportPath is specified and if so, move it to the requested folder; if there is a typo it will not be moved
-            # NOTE: If nothing is specified it will be created in "Device Collections" at the top
-            If ($null -ne $ImportPath) {
-                # Get the built collection, as the move step cannot be piped without breaking other pipes
-                $builtCol = Get-CMDeviceCollection -Name $name
-                # Move the collection
-                Move-CMObject -FolderPath "$SiteCode`:\DeviceCollection\$ImportPath" -InputObject $builtCol
-            }
-        }
+    Function New-RandomCMSchedule {
+        $minute = Get-Random -Minimum 0 -Maximum 59
+        $hour = Get-Random -Minimum 0 -Maximum 23
+        New-CMSchedule -Start (Get-Date -Hour $hour -Minute $minute) -DurationInterval Days -DurationCount 0 -RecurInterval Days -RecurCount 1
     }
 
     # If OS Collections are requested
@@ -165,13 +149,210 @@ Function Import-VexingCodeCollections {
             $wql = Invoke-RestMethod $file.download_Url
 
             # Generate a name based off of the preconfigured file name
-            $name = (($file).Name).Replace("Query-","").Replace(".wql","").Replace("-"," ")
-            If ($name -match 'Server') {
-                $name = 'Servers | ' + $name
+            $name = (($file).Name).Replace("Query_","OS | ").Replace(".wql","").Replace("_"," ")
+
+            # Generate the new CM Schedule
+            $colSchedule = New-RandomCMSchedule
+
+            # Create a Collection with a daily sync, based on the generated name
+            New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
+
+            # Detect if ImportPath is specified and if so, move it to the requested folder; if there is a typo it will not be moved
+            # NOTE: If nothing is specified it will be created in "Device Collections" at the top
+            If ($null -ne $ImportPath) {
+                # Get the built collection, as the move step cannot be piped without breaking other pipes
+                $builtCol = Get-CMDeviceCollection -Name $name
+                # Move the collection
+                Move-CMObject -FolderPath "$SiteCode`:\DeviceCollection\$ImportPath" -InputObject $builtCol
             }
-            Else {
-                $name = 'Workstations | ' + $name
+        }
+    }
+
+    # If ClientHealth Collections are requested
+    If ($ClientHealthCollections) {
+        # Set the path to the ClientHealth Collection files
+        $path = 'WQL/ClientHealth'
+
+        # Get all of the files in that path
+        $repoFiles = Invoke-RestMethod "https://api.github.com/repos/$user/$repo/contents/$path"
+
+        # Loop through the files found in the repo
+        ForEach ($file in $repoFiles) {
+            # Pull the download_Url, which is the raw content URL
+            $wql = Invoke-RestMethod $file.download_Url
+
+            # Generate a name based off of the preconfigured file name
+            $name = (($file).Name).Replace("Query_","Health | ").Replace(".wql","").Replace("_"," ").Replace("-"," - ")
+
+            # Generate the new CM Schedule
+            $colSchedule = New-RandomCMSchedule
+
+            # Create a Collection with a daily sync, based on the generated name
+            New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
+
+            # Detect if ImportPath is specified and if so, move it to the requested folder; if there is a typo it will not be moved
+            # NOTE: If nothing is specified it will be created in "Device Collections" at the top
+            If ($null -ne $ImportPath) {
+                # Get the built collection, as the move step cannot be piped without breaking other pipes
+                $builtCol = Get-CMDeviceCollection -Name $name
+                # Move the collection
+                Move-CMObject -FolderPath "$SiteCode`:\DeviceCollection\$ImportPath" -InputObject $builtCol
             }
+        }
+    }
+
+    # If ClientMDEHealth Collections are requested
+    If ($ClientMDEHealthCollections) {
+        # Set the path to the ClientMDEHealth Collection files
+        $path = 'WQL/ClientMDEHealth'
+
+        # Get all of the files in that path
+        $repoFiles = Invoke-RestMethod "https://api.github.com/repos/$user/$repo/contents/$path"
+
+        # Loop through the files found in the repo
+        ForEach ($file in $repoFiles) {
+            # Pull the download_Url, which is the raw content URL
+            $wql = Invoke-RestMethod $file.download_Url
+
+            # Generate a name based off of the preconfigured file name
+            $name = (($file).Name).Replace("Query_","MDE Health | ").Replace(".wql","").Replace("_"," ").Replace("-"," - ")
+
+            # Generate the new CM Schedule
+            $colSchedule = New-RandomCMSchedule
+
+            # Create a Collection with a daily sync, based on the generated name
+            New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
+
+            # Detect if ImportPath is specified and if so, move it to the requested folder; if there is a typo it will not be moved
+            # NOTE: If nothing is specified it will be created in "Device Collections" at the top
+            If ($null -ne $ImportPath) {
+                # Get the built collection, as the move step cannot be piped without breaking other pipes
+                $builtCol = Get-CMDeviceCollection -Name $name
+                # Move the collection
+                Move-CMObject -FolderPath "$SiteCode`:\DeviceCollection\$ImportPath" -InputObject $builtCol
+            }
+        }
+    }
+
+    # If Dogfood Collections are requested
+    If ($DogfoodCollections) {
+        # Set the path to the Dogfood Collection files
+        $path = 'WQL/Dogfood'
+
+        # Get all of the files in that path
+        $repoFiles = Invoke-RestMethod "https://api.github.com/repos/$user/$repo/contents/$path"
+
+        # Loop through the files found in the repo
+        ForEach ($file in $repoFiles) {
+            # Pull the download_Url, which is the raw content URL
+            $wql = Invoke-RestMethod $file.download_Url
+
+            # Generate a name based off of the preconfigured file name
+            $name = (($file).Name).Replace("Query_","Dogfood | ").Replace(".wql","").Replace("_"," ")
+
+            # Generate the new CM Schedule
+            $colSchedule = New-RandomCMSchedule
+
+            # Create a Collection with a daily sync, based on the generated name
+            New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
+
+            # Detect if ImportPath is specified and if so, move it to the requested folder; if there is a typo it will not be moved
+            # NOTE: If nothing is specified it will be created in "Device Collections" at the top
+            If ($null -ne $ImportPath) {
+                # Get the built collection, as the move step cannot be piped without breaking other pipes
+                $builtCol = Get-CMDeviceCollection -Name $name
+                # Move the collection
+                Move-CMObject -FolderPath "$SiteCode`:\DeviceCollection\$ImportPath" -InputObject $builtCol
+            }
+        }
+    }
+
+    # If CMRoles Collections are requested
+    If ($CMRolesCollections) {
+        # Set the path to the CMRoles Collection files
+        $path = 'WQL/CMRoles'
+
+        # Get all of the files in that path
+        $repoFiles = Invoke-RestMethod "https://api.github.com/repos/$user/$repo/contents/$path"
+
+        # Loop through the files found in the repo
+        ForEach ($file in $repoFiles) {
+            # Pull the download_Url, which is the raw content URL
+            $wql = Invoke-RestMethod $file.download_Url
+
+            # Generate a name based off of the preconfigured file name
+            $name = (($file).Name).Replace("Query_ServersWithCMRoles_","CMRoles | ").Replace(".wql","").Replace("_"," ")
+
+            # Generate the new CM Schedule
+            $colSchedule = New-RandomCMSchedule
+
+            # Create a Collection with a daily sync, based on the generated name
+            New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
+
+            # Detect if ImportPath is specified and if so, move it to the requested folder; if there is a typo it will not be moved
+            # NOTE: If nothing is specified it will be created in "Device Collections" at the top
+            If ($null -ne $ImportPath) {
+                # Get the built collection, as the move step cannot be piped without breaking other pipes
+                $builtCol = Get-CMDeviceCollection -Name $name
+                # Move the collection
+                Move-CMObject -FolderPath "$SiteCode`:\DeviceCollection\$ImportPath" -InputObject $builtCol
+            }
+        }
+    }
+
+    # If Hardware Collections are requested
+    If ($HardwareCollections) {
+        # Set the path to the Hardware Collection files
+        $path = 'WQL/Hardware'
+
+        # Get all of the files in that path
+        $repoFiles = Invoke-RestMethod "https://api.github.com/repos/$user/$repo/contents/$path"
+
+        # Loop through the files found in the repo
+        ForEach ($file in $repoFiles) {
+            # Pull the download_Url, which is the raw content URL
+            $wql = Invoke-RestMethod $file.download_Url
+
+            # Generate a name based off of the preconfigured file name
+            $fileName = ($file).Name
+            $prefix = $regex.Match($fileName).Value
+            $name = ($fileName).Replace("Query_","Hardware | ").Replace(".wql","").Replace("_"," ").Replace("$prefix ","$prefix - ")
+
+            # Generate the new CM Schedule
+            $colSchedule = New-RandomCMSchedule
+
+            # Create a Collection with a daily sync, based on the generated name
+            New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
+
+            # Detect if ImportPath is specified and if so, move it to the requested folder; if there is a typo it will not be moved
+            # NOTE: If nothing is specified it will be created in "Device Collections" at the top
+            If ($null -ne $ImportPath) {
+                # Get the built collection, as the move step cannot be piped without breaking other pipes
+                $builtCol = Get-CMDeviceCollection -Name $name
+                # Move the collection
+                Move-CMObject -FolderPath "$SiteCode`:\DeviceCollection\$ImportPath" -InputObject $builtCol
+            }
+        }
+    }
+
+    # If Firmware Collections are requested
+    If ($FirmwareCollections) {
+        # Set the path to the Firmware Collection files
+        $path = 'WQL/Firmware'
+
+        # Get all of the files in that path
+        $repoFiles = Invoke-RestMethod "https://api.github.com/repos/$user/$repo/contents/$path"
+
+        # Loop through the files found in the repo
+        ForEach ($file in $repoFiles) {
+            # Pull the download_Url, which is the raw content URL
+            $wql = Invoke-RestMethod $file.download_Url
+
+            # Generate a name based off of the preconfigured file name
+            $name = (($file).Name).Replace("Query_Firmware_","Firmware | ").Replace(".wql","").Replace("_"," ")
+
+            # Generate the new CM Schedule
+            $colSchedule = New-RandomCMSchedule
 
             # Create a Collection with a daily sync, based on the generated name
             New-CMDeviceCollection -LimitingCollectionName $LimitingCollection -Name $name -Comment $name -RefreshType Periodic -RefreshSchedule $colSchedule | Add-CMDeviceCollectionQueryMembershipRule -QueryExpression $wql -RuleName $name
