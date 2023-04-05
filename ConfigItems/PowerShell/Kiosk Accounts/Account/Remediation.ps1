@@ -1,10 +1,10 @@
 # Remediation
 
 # Set the vars
-$KioskName = 'CoSKiosk'
+$KioskName = 'Kiosk'
 $AutoLogonDomain = $env:COMPUTERNAME
-$cosRegKey = 'HKLM:\SOFTWARE\CoS'
-$itdToolsDir = "$env:ProgramData\ITD\Tools"
+$cntRegKey = 'HKLM:\SOFTWARE\CNT'
+$CNTToolsDir = "$env:ProgramData\CNT\Tools"
 
 Function Get-RandomPassword {
     # Generate a random length
@@ -29,24 +29,24 @@ Else {
     # Create the local account
     New-LocalUser -Name $KioskName -Description "Account used for kiosk automatic login." -Password (ConvertTo-SecureString -String $Password -AsPlainText -Force) -AccountNeverExpires -PasswordNeverExpires -UserMayNotChangePassword | Out-Null
 
-    # Validate the Autologon64.exe file is in the ITD\Tools directory; run it, if found
-    If (!(Test-Path $itdToolsDir\Autologon64.exe)) {
+    # Validate the Autologon64.exe file is in the CNT\Tools directory; run it, if found
+    If (!(Test-Path $CNTToolsDir\Autologon64.exe)) {
         # Autologon64.exe was not found; exit 2 (ERROR_FILE_NOT_FOUND)
         exit 2
     }
     Else {
         # Run the Autologon64.exe to configure the autologon
-        Start-Process -FilePath "$itdToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
+        Start-Process -FilePath "$CNTToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
     }
 
-    # Test if the $cosRegKey\AutoLogon exists; create it, if not
-    If (!(Test-Path $cosRegKey\Autologon -ErrorAction SilentlyContinue)) {
-        New-Item -Path $cosRegKey\Autologon -Force | Out-Null
+    # Test if the $cntRegKey\AutoLogon exists; create it, if not
+    If (!(Test-Path $cntRegKey\Autologon -ErrorAction SilentlyContinue)) {
+        New-Item -Path $cntRegKey\Autologon -Force | Out-Null
     }
 
     # Set keys to indicate that the CI fixed the account
-    New-ItemProperty $cosRegKey\Autologon -Name AL-CIAcctFix -PropertyType String -Value "True" -Force | Out-Null
-    New-ItemProperty $cosRegKey\Autologon -Name AL-CIAcctFixTimeStamp -PropertyType String -Value (Get-Date) -Force | Out-Null
+    New-ItemProperty $cntRegKey\Autologon -Name AL-CIAcctFix -PropertyType String -Value "True" -Force | Out-Null
+    New-ItemProperty $cntRegKey\Autologon -Name AL-CIAcctFixTimeStamp -PropertyType String -Value (Get-Date) -Force | Out-Null
 
     # Clear the password variables (best to be sure, m'kay?)
     Clear-Variable -Name "password"

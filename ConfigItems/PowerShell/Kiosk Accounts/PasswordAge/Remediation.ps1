@@ -1,10 +1,10 @@
 # Remediation
 
 # Set vars
-$KioskName = 'CoSKiosk'
+$KioskName = 'CNTKiosk'
 $AutoLogonDomain = $env:COMPUTERNAME
-$cosRegKey = 'HKLM:\SOFTWARE\CoS'
-$itdToolsDir = "$env:ProgramData\ITD\Tools"
+$CNTRegKey = 'HKLM:\SOFTWARE\CNT'
+$CNTToolsDir = "$env:ProgramData\CNT\Tools"
 
 Function Get-RandomPassword {
     # Generate a random length
@@ -18,8 +18,8 @@ Function Get-RandomPassword {
 # Generate the password and secure it
 $Password = Get-RandomPassword
 
-# Validate the Autologon64.exe file is in the ITD\Tools directory; run it, if found
-If (!(Test-Path $itdToolsDir\Autologon64.exe)) {
+# Validate the Autologon64.exe file is in the CNT\Tools directory; run it, if found
+If (!(Test-Path $CNTToolsDir\Autologon64.exe)) {
     # Autologon64.exe was not found; exit 2 (ERROR_FILE_NOT_FOUND)
     exit 2
 }
@@ -30,15 +30,15 @@ Else {
         Set-LocalUser -Name $KioskName -Password (ConvertTo-SecureString -String $Password -AsPlainText -Force) -AccountNeverExpires -PasswordNeverExpires $true -UserMayChangePassword $false | Out-Null
 
         # Run the Autologon64.exe to configure the autologon
-        Start-Process -FilePath "$itdToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
+        Start-Process -FilePath "$CNTToolsDir\Autologon64.exe" -ArgumentList "/AcceptEula $KioskName $AutoLogonDomain $Password"
 
-        # Test if the $cosRegKey\AutoLogon exists; create it, if not
-        If (!(Test-Path $cosRegKey\Autologon -ErrorAction SilentlyContinue)) {
-            New-Item -Path $cosRegKey\Autologon -Force | Out-Null
+        # Test if the $CNTRegKey\AutoLogon exists; create it, if not
+        If (!(Test-Path $CNTRegKey\Autologon -ErrorAction SilentlyContinue)) {
+            New-Item -Path $CNTRegKey\Autologon -Force | Out-Null
         }
 
         # Set key to indicate when the CI cycled the password last
-        New-ItemProperty $cosRegKey\Autologon -Name AL-CIPWCycleTimeStamp -PropertyType String -Value (Get-Date) -Force | Out-Null
+        New-ItemProperty $CNTRegKey\Autologon -Name AL-CIPWCycleTimeStamp -PropertyType String -Value (Get-Date) -Force | Out-Null
 
         # Clear the password variables (best to be sure, m'kay?)
         Clear-Variable -Name "password"
