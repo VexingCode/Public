@@ -41,7 +41,7 @@ Function Set-UsersAsEligibleToPIMGroup {
     an eligibility assignment, but the time remaining is less than or equal to the renewal
     threshold (7 days), it will remove and readd the assignement, thus refreshing the eligibility.
 .LINK
-    https://github.com/VexingCode/
+    https://github.com/VexingCode/Public/blob/main/PowerShell/Set-UsersAsEligibleToPimGroup.ps1
 .NOTES
     Name:           Set-UsersAsEligibleToPIMGroup.ps1
     Author:         Ahnamataeus Vex
