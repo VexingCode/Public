@@ -7,6 +7,7 @@ $templateId = (New-Guid).Guid
 $allowedResourceAction =
 @(
     "microsoft.directory/bitlockerKeys/key/read", # Read bitlocker metadata and key on devices.
+    "microsoft.directory/bitlockerKeys/metadata/read", # Read bitlocker key metadata on devices.
     "microsoft.directory/devices/registeredOwners/update", # Update registered owners of devices.
     "microsoft.directory/devices/registeredUsers/update" # Update registered users of devices.
 )
