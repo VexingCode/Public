@@ -1,58 +1,60 @@
-#Requires -Version 5.0
-#Requires -runasadministrator
-<#
-.SYNOPSIS
-    Function used to build collections in ConfigMgr, by grabbing WQL queries from my GitHub.
-.DESCRIPTION
-    This function will allow anyone to create collections within ConfigMgr, based on the collections
-    within my GitHub. The intention is that users can quickly build out collections in a new or test
-    environment. Contributions to the function, or the collections in general are greatly appreciated!
-.PARAMETER SiteCode
-    A mandatory parameter to specify the sitecode for you ConfigMgr instance.
-.PARAMETER SiteServer
-    A mandatory parameter to specify your site server.
-.PARAMETER LimitingCollection
-    A parameter to specify the name of the limiting collection. If no parameter is specified, then 
-    "All Systems" (SMS00001) will be used.
-.PARAMETER OSCollections
-    A switch that specifies you would like to import the OS collections.
-.PARAMETER ClientHealthCollections
-    A switch that specifies you would like to import the Client Health Collections.
-.PARAMETER ClientMDEHealthCollections
-    A switch that specifies you would like to import the Client MDE Health collections.
-.PARAMETER DogfoodCollections
-    A switch that specifies you would like to import the Dogfood collections.
-.PARAMETER CMRolesCollections
-    A switch that specifies you would like to import the ConfigMgr Role collections.
-.PARAMETER HardwareCollections
-    A switch that specifies you would like to import the Hardware collections.
-.PARAMETER ImportPath
-    The path that you want the devices to be dropped into. The structure for this command is: "Folder\Folder"
-.EXAMPLE
-    Import-VexingCodeCollections -SiteCode 'CNT' -SiteServer 'MEMCMYo' -OSCollections
-    
-    This will create the OS Collections in your ConfigMgr instance. They will have the default limiting collection
-    of "All Systems" and be placed at the default Device Collections root folder.
-.EXAMPLE
-    Import-VexingCodeCollections -SiteCode 'CNT' -SiteServer 'MEMCMYo' -LimitingCollection "All Devices and Servers" -OSCollections -ImportPath 'Testing\Import'
-
-    This will import the OS Collections into your ConfigMgr instance. They will have the limited collection of
-    "All Workstation and Servers" then be moved to the 'CNT:\DeviceCollection\Testing\Import' folder.
-.NOTES
-        Name:      Import-VexingCodeCollections.ps1
-        Author:    Ahnamataeus Vex
-        Version: 1.0.0
-        Release Date: 2022-05-06
-        To Do:
-            - Something something logging...
-            - Expand to the rest of the collection types
-            - Either clean the file names in my Git (probably a better option...), or script out more
-            to support the additional collection types
-            - Add all requested collections to one var, and process it at the end
-            - Allow for Limiting Collection ID or Name (filter if it starts with SMS or $SiteCode?)
-#>
-
 Function Import-VexingCodeCollections {
+
+    <#
+    .SYNOPSIS
+        Function used to build collections in ConfigMgr, by grabbing WQL queries from my GitHub.
+    .DESCRIPTION
+        This function will allow anyone to create collections within ConfigMgr, based on the collections
+        within my GitHub. The intention is that users can quickly build out collections in a new or test
+        environment. Contributions to the function, or the collections in general are greatly appreciated!
+    .PARAMETER SiteCode
+        A mandatory parameter to specify the sitecode for you ConfigMgr instance.
+    .PARAMETER SiteServer
+        A mandatory parameter to specify your site server.
+    .PARAMETER LimitingCollection
+        A parameter to specify the name of the limiting collection. If no parameter is specified, then 
+        "All Systems" (SMS00001) will be used.
+    .PARAMETER OSCollections
+        A switch that specifies you would like to import the OS collections.
+    .PARAMETER ClientHealthCollections
+        A switch that specifies you would like to import the Client Health Collections.
+    .PARAMETER ClientMDEHealthCollections
+        A switch that specifies you would like to import the Client MDE Health collections.
+    .PARAMETER DogfoodCollections
+        A switch that specifies you would like to import the Dogfood collections.
+    .PARAMETER CMRolesCollections
+        A switch that specifies you would like to import the ConfigMgr Role collections.
+    .PARAMETER HardwareCollections
+        A switch that specifies you would like to import the Hardware collections.
+    .PARAMETER ImportPath
+        The path that you want the devices to be dropped into. The structure for this command is: "Folder\Folder"
+    .EXAMPLE
+        Import-VexingCodeCollections -SiteCode 'CNT' -SiteServer 'MEMCMYo' -OSCollections
+        
+        This will create the OS Collections in your ConfigMgr instance. They will have the default limiting collection
+        of "All Systems" and be placed at the default Device Collections root folder.
+    .EXAMPLE
+        Import-VexingCodeCollections -SiteCode 'CNT' -SiteServer 'MEMCMYo' -LimitingCollection "All Devices and Servers" -OSCollections -ImportPath 'Testing\Import'
+
+        This will import the OS Collections into your ConfigMgr instance. They will have the limited collection of
+        "All Workstation and Servers" then be moved to the 'CNT:\DeviceCollection\Testing\Import' folder.
+    .NOTES
+            Name:      Import-VexingCodeCollections.ps1
+            Author:    Ahnamataeus Vex
+            Version: 1.0.0
+            Release Date: 2022-05-06
+            To Do:
+                - Something something logging...
+                - Expand to the rest of the collection types
+                - Either clean the file names in my Git (probably a better option...), or script out more
+                to support the additional collection types
+                - Add all requested collections to one var, and process it at the end
+                - Allow for Limiting Collection ID or Name (filter if it starts with SMS or $SiteCode?)
+    #>
+
+    #Requires -Version 5.0
+    #Requires -runasadministrator
+
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
