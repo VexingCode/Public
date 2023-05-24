@@ -47,7 +47,7 @@ $json = @'
 	{
     "@odata.context": "https://graph.microsoft.com/beta/$metadata#deviceManagement/roleDefinitions/$entity",
     "@odata.type": "#microsoft.graph.deviceAndAppManagementRoleDefinition",
-    "displayName": "Help Desk Operators - Tier 1",
+    "displayName": "Help Desk Operators - Tier 1 Test",
     "description": "Help Desk Operators - Tier 1 can perform remote tasks on users and devices and can assign applications or policies to users or devices. This is a clone of the built-in \"Help Desk Operators\" role, minus some permissions such as wipe (all kinds), and application deployments.",
     "isBuiltInRoleDefinition": false,
     "isBuiltIn": false,
