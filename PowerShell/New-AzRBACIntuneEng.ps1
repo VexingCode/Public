@@ -1,6 +1,6 @@
 # Create AzureAD 'Intune Engineer' role information
 $displayName = "Intune Engineer"
-$description = "Grants permissions similar to an Intune Administrators, without full control. Intended for the Device Engineering team members that are not Intune Administrators."
+$description = "Grants permissions similar to an Intune Administrators, without full control. Intended for team members that are not Intune Administrators."
 $templateId = (New-Guid).Guid
  
 # Set of permissions to grant
