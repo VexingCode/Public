@@ -1,136 +1,137 @@
-<#
-.SYNOPSIS
-    Validate and check the Protocols, Ciphers, and CipherSuites for PCI 3.2 compliance.
-.DESCRIPTION
-    Checks the specified Protocol, Cipher, or CipherSuites for PCI 3.2 compliance. Intended for use with ConfigMgr
-    on a per Protocol/Cipher/CipherSuite basis for Configuration Item reporting and remediation.
-.INPUTS
-    -Protocol
-        This parameter specifies the protocol you would like to validate or remediate.
-        Valid options are:
-            Multi-Protocol Unified Hello - This will DISABLE Multi-Protocol Unified Hello if -Remediate is specified
-            PCT 1.0 - This will DISABLE PCT 1.0 if -Remediate is specified
-            SSL 2.0 - This will DISABLE SSL 2.0 if -Remediate is specified
-            SSL 3.0 - This will DISABLE SSL 3.0 if -Remediate is specified
-            TLS 1.0 - This will DISABLE TLS 1.0 if -Remediate is specified
-            TLS 1.1 - This will DISABLE TLS 1.1 if -Remediate is specified
-            TLS 1.2 - This will ENABLE TLS 1.2 if -Remediate is specified
-    -SubProtocol
-        This parameter specifies the protocol you would like to validate or remediate. Both of these
-        need to be set for compliance.
-        Valid options are:
-            Client
-            Server
-    -ProtocolProperty
-        This parameter specifies the property you would like to validate or remediate. Both of these
-        need to be set for compliance.
-        Valid options are:
-            Enabled
-            DisabledByDefault
-
-        NOTE: This option does not exist for Ciphers or CipherSuites; Ciphers only use "Enabled", and CipherSuites
-        use a PowerShell cmdlet.
-    -Cipher
-        This parameter specifies the Cipher you would like to validate or remediate.
-        Valid options are:
-            AES 128/128 - This will ENABLE AES 128/128 if -Remediate is specified
-            AES 256/256 - This will ENABLE AES 256/256 if -Remediate is specified
-            DES 56/56 - This will DISABLE DES 56/56 if -Remediate is specified
-            NULL- This will DISABLE NULL if -Remediate is specified
-            RC2 128/128 - This will DISABLE RC2 128/128 if -Remediate is specified
-            RC2 40/128 - This will DISABLE RC2 40/128 if -Remediate is specified
-            RC2 56/128 - This will DISABLE RC2 56/128 if -Remediate is specified
-            RC4 128/128 - This will DISABLE RC4 128/128 if -Remediate is specified
-            RC4 40/128 - This will DISABLE RC4 40/128 if -Remediate is specified
-            RC4 56/128 - This will DISABLE RC4 56/128 if -Remediate is specified
-            RC4 64/128 - This will DISABLE RC4 64/128 1.0 if -Remediate is specified
-            Triple DES 168 - This will ENABLE Triple DES 168 if -Remediate is specified
-    -CipherSuite
-        This parameter specified the Cipher Suite you would like to validate or remediate.
-        Valid options are:
-            TLS_AES_256_GCM_SHA384 - This will DISABLE TLS_AES_256_GCM_SHA384 if -Remediate is specified
-            TLS_AES_128_GCM_SHA256 - This will DISABLE  if -Remediate is specified
-            TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 - This will DISABLE TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 if -Remediate is specified
-            TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 - This will DISABLE TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 if -Remediate is specified
-            TLS_RSA_WITH_3DES_EDE_CBC_SHA - This will DISABLE TLS_RSA_WITH_3DES_EDE_CBC_SHA if -Remediate is specified
-            TLS_PSK_WITH_AES_256_GCM_SHA384 - This will DISABLE TLS_PSK_WITH_AES_256_GCM_SHA384 if -Remediate is specified
-            TLS_PSK_WITH_AES_128_GCM_SHA256 - This will DISABLE TLS_PSK_WITH_AES_128_GCM_SHA256 if -Remediate is specified
-            TLS_PSK_WITH_AES_256_CBC_SHA384 - This will DISABLE TLS_PSK_WITH_AES_256_CBC_SHA384 if -Remediate is specified
-            TLS_PSK_WITH_AES_128_CBC_SHA256 - This will DISABLE TLS_PSK_WITH_AES_128_CBC_SHA256 if -Remediate is specified
-            TLS_PSK_WITH_NULL_SHA384 - This will DISABLE TLS_PSK_WITH_NULL_SHA384 if -Remediate is specified
-            TLS_PSK_WITH_NULL_SHA256 - This will DISABLE TLS_PSK_WITH_NULL_SHA256 if -Remediate is specified
-            TLS_RSA_WITH_NULL_SHA256 - This will DISABLE TLS_RSA_WITH_NULL_SHA256 if -Remediate is specified
-            TLS_RSA_WITH_NULL_SHA - This will DISABLE TLS_RSA_WITH_NULL_SHA if -Remediate is specified
-    -Toggle (UNUSED: CURRENTLY IN DEV)
-        This parameter specifies whether to detect or remediate if the setting is enabled or 
-        disabled.
-        Valid options are:
-            Enable
-            Disable
-    -Remediate
-        This parameter is a swich that will tell the function to return $true or 
-        $false (validate), or to remediate by creating/setting the values.
-.EXAMPLE
-    Set-PCI32 -Protocol "TLS 1.0" -SubProtocol "Client" -Property "Enabled"
-
-    This will check that the TLS 1.0\Client property "Enabled" exists, and ensure its set to 0.
-    If not it will return $false.
-.EXAMPLE
-    Set-PCI32 -Protocol "TLS 1.0" -SubProtocol "Client" -Property "Enabled" -Remediate
-
-    This will check that the TLS 1.0\Client property "Enabled" exists, and ensure its set to 0.
-    If not it will remediate it by ensuring the key, property, and value are all created and
-    set.
-.EXAMPLE
-    Set-PCI32 -Protocol "TLS 1.0" -SubProtocol "Server" -Property "DisabledByDefault"
-
-    This will check that the TLS 1.0\Server property "DisabledByDefault" exists, and ensure its set to 0.
-    If not it will return $false.
-.EXAMPLE
-    Set-PCI32 -Protocol "TLS 1.0" -SubProtocol "Server" -Property "DisabledByDefault" -Remediate
-
-    This will check that the TLS 1.0\Server property "DisabledByDefault" exists, and ensure its set to 0.
-    If not it will remediate it by ensuring the key, property, and value are all created and
-    set.
-.EXAMPLE
-    Set-PCI32 -Cipher "NULL"
-
-    This will check that the Cipher\NULL property "Enabled" exists, and ensure its set to 0.
-    If not it will return $false.
-.EXAMPLE
-    Set-PCI32 -Cipher "NULL" -Remediate
-
-    This will check that the Cipher\NULL property "Enabled" exists, and ensure its set to 0.
-    If not it will remediate it by ensuring the key, property, and value are all created and
-    set.
-.EXAMPLE
-    Set-PCI32 -CipherSuite 'TLS_AES_256_GCM_SHA384'
-
-    This will check that Get-TlsCipherSuite -Name 'TLS_AES_256_GCM_SHA384' does not return a value,
-    indicating that it is disabled.
-    If not it will return $false.
-.EXAMPLE
-    Set-PCI32 -CipherSuite 'TLS_AES_256_GCM_SHA384' -Remediate
-
-    This will check that Get-TlsCipherSuite -Name 'TLS_AES_256_GCM_SHA384' does not return a value,
-    indicating that it is disabled.
-    If not it will remediate it by ensuring the key, property, and value are all created and
-    set.
-.NOTES
-    Name:      Set-PCI32.ps1
-    Author:    Ahnamataeus Vex
-    Version: 1.0.0
-    Release Date: 2022-05-16
-        Updated:
-            Version 1.0.1: 2022.05.17
-                Added the $CipherSuiteSet ParameterSet
-                Added the $CipherSuite parameter, with a ValidateSet list, for validation and remediation
-    To-Do:
-        - Add support for Intune Proactive Remediations
-        - Instead of just disabling, add a toggle for Enable/Disable
-#>
-
 Function Set-PCI32 {
+
+    <#
+    .SYNOPSIS
+        Validate and check the Protocols, Ciphers, and CipherSuites for PCI 3.2 compliance.
+    .DESCRIPTION
+        Checks the specified Protocol, Cipher, or CipherSuites for PCI 3.2 compliance. Intended for use with ConfigMgr
+        on a per Protocol/Cipher/CipherSuite basis for Configuration Item reporting and remediation.
+    .INPUTS
+        -Protocol
+            This parameter specifies the protocol you would like to validate or remediate.
+            Valid options are:
+                Multi-Protocol Unified Hello - This will DISABLE Multi-Protocol Unified Hello if -Remediate is specified
+                PCT 1.0 - This will DISABLE PCT 1.0 if -Remediate is specified
+                SSL 2.0 - This will DISABLE SSL 2.0 if -Remediate is specified
+                SSL 3.0 - This will DISABLE SSL 3.0 if -Remediate is specified
+                TLS 1.0 - This will DISABLE TLS 1.0 if -Remediate is specified
+                TLS 1.1 - This will DISABLE TLS 1.1 if -Remediate is specified
+                TLS 1.2 - This will ENABLE TLS 1.2 if -Remediate is specified
+        -SubProtocol
+            This parameter specifies the protocol you would like to validate or remediate. Both of these
+            need to be set for compliance.
+            Valid options are:
+                Client
+                Server
+        -ProtocolProperty
+            This parameter specifies the property you would like to validate or remediate. Both of these
+            need to be set for compliance.
+            Valid options are:
+                Enabled
+                DisabledByDefault
+
+            NOTE: This option does not exist for Ciphers or CipherSuites; Ciphers only use "Enabled", and CipherSuites
+            use a PowerShell cmdlet.
+        -Cipher
+            This parameter specifies the Cipher you would like to validate or remediate.
+            Valid options are:
+                AES 128/128 - This will ENABLE AES 128/128 if -Remediate is specified
+                AES 256/256 - This will ENABLE AES 256/256 if -Remediate is specified
+                DES 56/56 - This will DISABLE DES 56/56 if -Remediate is specified
+                NULL- This will DISABLE NULL if -Remediate is specified
+                RC2 128/128 - This will DISABLE RC2 128/128 if -Remediate is specified
+                RC2 40/128 - This will DISABLE RC2 40/128 if -Remediate is specified
+                RC2 56/128 - This will DISABLE RC2 56/128 if -Remediate is specified
+                RC4 128/128 - This will DISABLE RC4 128/128 if -Remediate is specified
+                RC4 40/128 - This will DISABLE RC4 40/128 if -Remediate is specified
+                RC4 56/128 - This will DISABLE RC4 56/128 if -Remediate is specified
+                RC4 64/128 - This will DISABLE RC4 64/128 1.0 if -Remediate is specified
+                Triple DES 168 - This will ENABLE Triple DES 168 if -Remediate is specified
+        -CipherSuite
+            This parameter specified the Cipher Suite you would like to validate or remediate.
+            Valid options are:
+                TLS_AES_256_GCM_SHA384 - This will DISABLE TLS_AES_256_GCM_SHA384 if -Remediate is specified
+                TLS_AES_128_GCM_SHA256 - This will DISABLE  if -Remediate is specified
+                TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 - This will DISABLE TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 if -Remediate is specified
+                TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 - This will DISABLE TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 if -Remediate is specified
+                TLS_RSA_WITH_3DES_EDE_CBC_SHA - This will DISABLE TLS_RSA_WITH_3DES_EDE_CBC_SHA if -Remediate is specified
+                TLS_PSK_WITH_AES_256_GCM_SHA384 - This will DISABLE TLS_PSK_WITH_AES_256_GCM_SHA384 if -Remediate is specified
+                TLS_PSK_WITH_AES_128_GCM_SHA256 - This will DISABLE TLS_PSK_WITH_AES_128_GCM_SHA256 if -Remediate is specified
+                TLS_PSK_WITH_AES_256_CBC_SHA384 - This will DISABLE TLS_PSK_WITH_AES_256_CBC_SHA384 if -Remediate is specified
+                TLS_PSK_WITH_AES_128_CBC_SHA256 - This will DISABLE TLS_PSK_WITH_AES_128_CBC_SHA256 if -Remediate is specified
+                TLS_PSK_WITH_NULL_SHA384 - This will DISABLE TLS_PSK_WITH_NULL_SHA384 if -Remediate is specified
+                TLS_PSK_WITH_NULL_SHA256 - This will DISABLE TLS_PSK_WITH_NULL_SHA256 if -Remediate is specified
+                TLS_RSA_WITH_NULL_SHA256 - This will DISABLE TLS_RSA_WITH_NULL_SHA256 if -Remediate is specified
+                TLS_RSA_WITH_NULL_SHA - This will DISABLE TLS_RSA_WITH_NULL_SHA if -Remediate is specified
+        -Toggle (UNUSED: CURRENTLY IN DEV)
+            This parameter specifies whether to detect or remediate if the setting is enabled or 
+            disabled.
+            Valid options are:
+                Enable
+                Disable
+        -Remediate
+            This parameter is a swich that will tell the function to return $true or 
+            $false (validate), or to remediate by creating/setting the values.
+    .EXAMPLE
+        Set-PCI32 -Protocol "TLS 1.0" -SubProtocol "Client" -Property "Enabled"
+
+        This will check that the TLS 1.0\Client property "Enabled" exists, and ensure its set to 0.
+        If not it will return $false.
+    .EXAMPLE
+        Set-PCI32 -Protocol "TLS 1.0" -SubProtocol "Client" -Property "Enabled" -Remediate
+
+        This will check that the TLS 1.0\Client property "Enabled" exists, and ensure its set to 0.
+        If not it will remediate it by ensuring the key, property, and value are all created and
+        set.
+    .EXAMPLE
+        Set-PCI32 -Protocol "TLS 1.0" -SubProtocol "Server" -Property "DisabledByDefault"
+
+        This will check that the TLS 1.0\Server property "DisabledByDefault" exists, and ensure its set to 0.
+        If not it will return $false.
+    .EXAMPLE
+        Set-PCI32 -Protocol "TLS 1.0" -SubProtocol "Server" -Property "DisabledByDefault" -Remediate
+
+        This will check that the TLS 1.0\Server property "DisabledByDefault" exists, and ensure its set to 0.
+        If not it will remediate it by ensuring the key, property, and value are all created and
+        set.
+    .EXAMPLE
+        Set-PCI32 -Cipher "NULL"
+
+        This will check that the Cipher\NULL property "Enabled" exists, and ensure its set to 0.
+        If not it will return $false.
+    .EXAMPLE
+        Set-PCI32 -Cipher "NULL" -Remediate
+
+        This will check that the Cipher\NULL property "Enabled" exists, and ensure its set to 0.
+        If not it will remediate it by ensuring the key, property, and value are all created and
+        set.
+    .EXAMPLE
+        Set-PCI32 -CipherSuite 'TLS_AES_256_GCM_SHA384'
+
+        This will check that Get-TlsCipherSuite -Name 'TLS_AES_256_GCM_SHA384' does not return a value,
+        indicating that it is disabled.
+        If not it will return $false.
+    .EXAMPLE
+        Set-PCI32 -CipherSuite 'TLS_AES_256_GCM_SHA384' -Remediate
+
+        This will check that Get-TlsCipherSuite -Name 'TLS_AES_256_GCM_SHA384' does not return a value,
+        indicating that it is disabled.
+        If not it will remediate it by ensuring the key, property, and value are all created and
+        set.
+    .NOTES
+        Name:      Set-PCI32.ps1
+        Author:    Ahnamataeus Vex
+        Version: 1.0.0
+        Release Date: 2022-05-16
+            Updated:
+                Version 1.0.1: 2022.05.17
+                    Added the $CipherSuiteSet ParameterSet
+                    Added the $CipherSuite parameter, with a ValidateSet list, for validation and remediation
+        To-Do:
+            - Add support for Intune Proactive Remediations
+            - Instead of just disabling, add a toggle for Enable/Disable
+    #>
+
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true,ParameterSetName="ProtocolSet",Position=0)]
@@ -206,6 +207,30 @@ Function Set-PCI32 {
         $Remediate
     )
 
+    Switch ($PSCmdlet.ParameterSetName) {
+        "ProtocolSet" { 
+            # Write-Verbose 'ProtocolSet initiated.'
+            $ProtocolSet = $true
+            $CipherSet = $null
+            $CipherSuiteSet = $null
+        }
+
+        "CipherSet" { 
+            # Write-Verbose 'CipherSet initiated.'
+            $ProtocolSet = $null
+            $CipherSet = $true
+            $CipherSuiteSet = $null
+        }
+
+        "CipherSuiteSet" { 
+            # Write-Verbose 'CipherSuiteSet initiated.'
+            $ProtocolSet = $null
+            $CipherSet = $null
+            $CipherSuiteSet = $true    
+        }
+    }
+
+
     # Set the HKLM
     $hklm = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\'
 
@@ -277,13 +302,13 @@ Function Set-PCI32 {
             }
             Else {
                 # The property value matches; return compliant
-                $true
+                Write-Verbose "$Protocol set for the $SubProtocol sub protocol, and $protocolProperty property."
             }
         }
     } # End Protocol section
     # Start Cipher section
     ElseIf ($CipherSet) {
-        # Build the ciphers path
+        # Build the cipher's path
         $cipherKey = "SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers"
         $cipherPath = $hklm + 'Ciphers\' + $Cipher
 
@@ -342,12 +367,12 @@ Function Set-PCI32 {
             }
             Else {
                 # The property value matches; return compliant
-                $true
+                Write-Verbose "$Cipher set."
             }
         }
     } # End Cipher section
     # Start Cipher Suite section
-    Else {
+    ElseIf ($CipherSuiteSet) {
         # Things get a bit ugly here as there is a regkey that can cause the *-TlsCipherSuite commands to not report/work properly
         If (Get-ItemProperty 'HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002' -Name Functions -ErrorAction SilentlyContinue) { 
             # The key exists; blow it away
@@ -367,7 +392,7 @@ Function Set-PCI32 {
         }
         Else {
             # The Cipher Suite is not detected; return compliant
-            $true
+            Write-Verbose "$CipherSuite set."
         }
     } # End Cipher Suite section
 }

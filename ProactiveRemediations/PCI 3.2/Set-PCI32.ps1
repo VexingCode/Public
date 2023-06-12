@@ -135,11 +135,11 @@ Function Set-PCI32 {
     param (
         [Parameter(Mandatory=$true,ParameterSetName="ProtocolSet",Position=0)]
         [ValidateSet(
-            'Multi-Protocol Unified Hello',
-            'PCT 1.0',
-            'SSL 2.0',
-            'SSL 3.0',
-            'TLS 1.0',
+            'Multi-Protocol Unified Hello', #
+            'PCT 1.0', #
+            'SSL 2.0', #
+            'SSL 3.0', #
+            'TLS 1.0', #
             'TLS 1.1',
             'TLS 1.2'
         )]
@@ -161,36 +161,36 @@ Function Set-PCI32 {
         $ProtocolProperty,
         [Parameter(Mandatory=$true,ParameterSetName="CipherSet",Position=0)]
         [ValidateSet(
-            'AES 128/128',
-            'AES 256/256',
-            'DES 56/56',
-            'NULL',
-            'RC2 128/128',
-            'RC2 40/128',
-            'RC2 56/128',
-            'RC4 128/128',
-            'RC4 40/128',
-            'RC4 56/128',
-            'RC4 64/128',
-            'Triple DES 168'
+            'AES 128/128', #
+            'AES 256/256', #
+            'DES 56/56', #
+            'NULL', #
+            'RC2 128/128', #
+            'RC2 40/128', #
+            'RC2 56/128', #
+            'RC4 128/128', #
+            'RC4 40/128', #
+            'RC4 56/128', #
+            'RC4 64/128',  #
+            'Triple DES 168' #
         )]
         [string]
         $Cipher,
         [Parameter(Mandatory=$true,ParameterSetName="CipherSuiteSet",Position=0)]
         [ValidateSet(
-            'TLS_AES_256_GCM_SHA384',
-            'TLS_AES_128_GCM_SHA256',
-            'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384',
-            'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256',
-            'TLS_RSA_WITH_3DES_EDE_CBC_SHA',
-            'TLS_PSK_WITH_AES_256_GCM_SHA384',
-            'TLS_PSK_WITH_AES_128_GCM_SHA256',
-            'TLS_PSK_WITH_AES_256_CBC_SHA384',
-            'TLS_PSK_WITH_AES_128_CBC_SHA256',
-            'TLS_PSK_WITH_NULL_SHA384',
-            'TLS_PSK_WITH_NULL_SHA256',
-            'TLS_RSA_WITH_NULL_SHA256',
-            'TLS_RSA_WITH_NULL_SHA'
+            'TLS_AES_256_GCM_SHA384', #
+            'TLS_AES_128_GCM_SHA256', #
+            'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384', #
+            'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256', #
+            'TLS_RSA_WITH_3DES_EDE_CBC_SHA', # 
+            'TLS_PSK_WITH_AES_256_GCM_SHA384', #
+            'TLS_PSK_WITH_AES_128_GCM_SHA256', # 
+            'TLS_PSK_WITH_AES_256_CBC_SHA384', #
+            'TLS_PSK_WITH_AES_128_CBC_SHA256', #
+            'TLS_PSK_WITH_NULL_SHA384', #
+            'TLS_PSK_WITH_NULL_SHA256', # 
+            'TLS_RSA_WITH_NULL_SHA256', #
+            'TLS_RSA_WITH_NULL_SHA' #
         )]
         [string]
         $CipherSuite,
