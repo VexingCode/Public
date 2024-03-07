@@ -1,212 +1,175 @@
-<#
-.SYNOPSIS
-    Auth against Azure, fetch a device by name, and wipe it.
-.DESCRIPTION
-    This will fetch and auth token for the specified username, to be used with Graph API, utilizing the Microsoft 
-    Get-AuthToken function. It will then use Graph to search for a device by the specified name, and pull the
-    Device ID. Once it has the ID, it will once again use Graph to POST a wipe command.
-.EXAMPLE
-    PS C:\> Invoke-IntuneDeviceWipe -Username 'IntuneAdmin@contoso.com' -DeviceName 'AZR-SERIAL'
+# WIP: ParameterSetNames causing issues; researching...
+# Error: Invoke-DevDeviceWipe: Parameter set cannot be resolved using the specified named parameters. One or more parameters issued cannot be used together or an insufficient number of parameters were provided.
 
-    This will grab an $authToken for 'IntuneAdmin@contoso.com', then run a wipe on the device named 'AZR-SERIAL'.
-.INPUTS
-    -Username
-        This parameter specifies the account to fetch the $authToken for. Please ensure it has the correct Intune
-        permissions assigned/checked out.
-    -DeviceName
-        This parameter specifies the name of the device you would like to wipe.
-    -DeviceType (DEV)
-        ***CURRENTLY IN DEV, JUST A PLACE HOLDER***
-        This parameter specifies the type of device that you are targeting.
-        Valid Values:
-                Windows
-                Android
-                iOS
-.NOTES
-    Name:           Invoke-IntuneDeviceWipe.ps1
-    Author:         Ahnamataeus Vex
-    Credit:         Dave Falkus
-                        Utilized the Get-AuthToken function from:
-                            https://github.com/microsoftgraph/powershell-intune-samples/blob/master/CompliancePolicy/CompliancePolicy_Get.ps1
-    Version:        1.0.0
-    Release Date:   2022-12-24
-    Notes:
-                    BE CAREFUL. THIS WILL INITIATE A WIPE ON THE DEVICE. DO NOT PASS GO. DO NOT COLLECT $200.
-                    Ensure that you have the Intune admin role assigned/checked out, first.
-    To-Do:
-                    - Add parameter for the device ID, if you already have it (use parameter set vs device name)
-                    - Logging (because duh)
-                    - Error handling
-                    - Expand to all device types (+ Android, iOS)
-#>
-
-get
-Function Invoke-IntuneDeviceWipe {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory=$true)]
+Function Invoke-DevDeviceWipe {
+    [CmdletBinding(SupportsShouldProcess)]
+    Param (
+        [Parameter(Mandatory)]
+        [ValidateSet('Windows','Android','MacOS','iOS')]
         [string]
-        $Username,
-        <#[Parameter(Mandatory=$true)]
-        [ValidateSet('Windows','Android','iOS')]
+        $OS,
+        # Graph return: deviceName
+        [Parameter(ParameterSetName='W')]
+        [Parameter(ParameterSetName='M')]
         [string]
-        $DeviceType,#>
-        [Parameter(Mandatory=$true)]
+        $DeviceName,
+        # Graph return: id
+        [Parameter()]
         [string]
-        $DeviceName
+        $DeviceId,
+        # Graph return: imei
+        [Parameter(ParameterSetName='A')]
+        [Parameter(ParameterSetName='i')]
+        [string]
+        $DeviceIMEI,
+        # Graph return: serialNumber
+        [Parameter(ParameterSetName='W')]
+        [Parameter(ParameterSetName='A')]
+        [Parameter(ParameterSetName='M')]
+        [Parameter(ParameterSetName='i')]
+        [Parameter()]
+        [string]
+        $DeviceSerial
     )
 
-    # Embedding Dave Falkus' script to get an Auth Token
-    Function Get-AuthToken {
+    Begin {
+        Switch ($OS) {
+            'Windows' {
+                If ((($null -ne $DeviceName) -and ($null -ne $DeviceId) -and ($null -ne $DeviceSerial)) -gt 1) {
+                    Throw "For Windows, you can only specify one of DeviceName, DeviceId, or DeviceSerial."
+                }
+            }
+            'Android' {
+                If ((($null -ne $DeviceId) -and ($null -ne $DeviceIMEI) -and ($null -ne $DeviceSerial)) -gt 1) {
+                    Throw "For Android, you can only specify one of DeviceId, DeviceIMEI, or DeviceSerial."
+                }
+            }
+            'iOS' {
+                If ((($null -ne $DeviceId) -and ($null -ne $DeviceIMEI) -and ($null -ne $DeviceSerial)) -gt 1) {
+                    Throw "For iOS, you can only specify one of DeviceId, DeviceIMEI, or DeviceSerial."
+                }
+            }
+            'MacOS' {
+                If ((($null -ne $DeviceName) -and ($null -ne $DeviceId) -and ($null -ne $DeviceSerial)) -gt 1) {
+                    Throw "For MacOS, you can only specify one of DeviceName, DeviceId, or DeviceSerial."
+                }
+            }
+        }
+    } Process {
+        Function Export-ALBCode {
+            # Create the CoS folder if it doesn't exist
+            If (!(Test-Path 'C:\ProgramData\CoS')) {
+                New-Item 'C:\ProgramData\CoS' -ItemType Directory | Out-Null
+            }
+    
+            # Set the parameters, and block
+            $albcRetrievalDate = Get-Date -Format "yyyyMMddTHHmmssZ"
+            $fileName = "ALBC-$DeviceId-$albcRetrievalDate.txt"
+            $fileValueBlock = @(
+                "Device Name: $($deviceInfo.Value.deviceName)"
+                "Device Id: $DeviceId"
+                "ActivateLock Bypass Code: $albCode"
+                "Date of Retrieval: $albcRetrievalDate"
+            )
+    
+            # Create the file, with the content
+            Set-Content -Path "C:\ProgramData\CoS\$fileName" -Value $fileValueBlock
+    
+            Write-Host "The information has been saved, locally, to " -NoNewline
+            Write-Host "C:\ProgramData\CoS\" -NoNewline -ForegroundColor Green
+            Write-Host $fileName -ForegroundColor Cyan
+        }
 
-        <#
-        .SYNOPSIS
-        This function is used to authenticate with the Graph API REST interface
-        .DESCRIPTION
-        The function authenticate with the Graph API Interface with the tenant name
-        .EXAMPLE
-        Get-AuthToken
-        Authenticates you with the Graph API interface
-        .NOTES
-        NAME: Get-AuthToken
-        #>
+        # Variables
+        $managedDevicesUri = '/beta/deviceManagement/managedDevices'
+
+        If ($DeviceName) {
+            <# 
+            Apple devices often use a "[Name]'s [Device]" template; this causes RH curly single quotes in Entra/Intune
+            Since the desktop teams would likely just be using the apostrophe key, we need to replace it with
+            %E2%80%99, which is the percent-encoded representation of the RH curly single quote.
+
+            We are making the (inevitably incorrect) assumption that this is the only weird character we will find
+            that would throw off the Graph filter query.
+            #>
+            Write-Host 'DeviceName provided.'
+            $DeviceName = $DeviceName.Replace("'","%E2%80%99")
+            Write-Host "DeviceName is: $DeviceName"
+
+            # Set the URI to filter on device name
+            $deviceUri = "$managedDevicesUri/`?`$filter=deviceName eq '$DeviceName'"
+            Write-Host "DeviceUri is: $deviceUri"
+        } ElseIf ($DeviceId) {
+            # Set the URI to grab the device id (Note: This is the INTUNE device id)
+            $deviceUri = "$managedDevicesUri('$DeviceId')"
+        } ElseIf ($DeviceIMEI) {
+            # Set the URI to filter on the IMEI
+            $deviceUri = "$managedDevicesUri/`?`$filter=imei eq '$DeviceIMEI'"
+        } ElseIf ($DeviceSerial) {
+            # Set the URI to filter on the serial number
+            $deviceUri = "$managedDevicesUri/`?`$filter=serialNumber eq '$DeviceSerial'"
+        }
+
+        # Connect MgGraph
+        Connect-MgGraph -Scopes DeviceManagementConfiguration.ReadWrite.All,DeviceManagementManagedDevices.PrivilegedOperations.All -NoWelcome
+
+        # Get the device information and set the wipe Uri
+        $deviceInfo = Invoke-MgGraphRequest -Method GET -Uri $deviceUri
+        Write-Host "DeviceInfo.Value.Id is: $($deviceInfo.Value.Id)"
+        If ($null -eq $DeviceId) {
+            $DeviceId = $deviceInfo.Value.Id
+        }
         
-        [cmdletbinding()]
-        
-        param
-        (
-            [Parameter(Mandatory=$true)]
-            $User
-        )
-        
-        $userUpn = New-Object "System.Net.Mail.MailAddress" -ArgumentList $User
-        
-        $tenant = $userUpn.Host
-        
-        Write-Host "Checking for AzureAD module..."
-        
-            $AadModule = Get-Module -Name "AzureAD" -ListAvailable
-        
-            if ($null -eq $AadModule) {
-        
-                Write-Host "AzureAD PowerShell module not found, looking for AzureADPreview"
-                $AadModule = Get-Module -Name "AzureADPreview" -ListAvailable
-        
-            }
-        
-            if ($null -eq $AadModule) {
-                write-host
-                write-host "AzureAD Powershell module not installed..." -f Red
-                write-host "Install by running 'Install-Module AzureAD' or 'Install-Module AzureADPreview' from an elevated PowerShell prompt" -f Yellow
-                write-host "Script can't continue..." -f Red
-                write-host
-                exit
-            }
-        
-        # Getting path to ActiveDirectory Assemblies
-        # If the module count is greater than 1 find the latest version
-        
-            if($AadModule.count -gt 1){
-        
-                $Latest_Version = ($AadModule | Select-Object version | Sort-Object)[-1]
-        
-                $aadModule = $AadModule | ? { $_.version -eq $Latest_Version.version }
-        
-                    # Checking if there are multiple versions of the same module found
-        
-                    if($AadModule.count -gt 1){
-        
-                    $aadModule = $AadModule | Select-Object -Unique
-        
-                    }
-        
-                $adal = Join-Path $AadModule.ModuleBase "Microsoft.IdentityModel.Clients.ActiveDirectory.dll"
-                $adalforms = Join-Path $AadModule.ModuleBase "Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll"
-        
-            }
-        
-            else {
-        
-                $adal = Join-Path $AadModule.ModuleBase "Microsoft.IdentityModel.Clients.ActiveDirectory.dll"
-                $adalforms = Join-Path $AadModule.ModuleBase "Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll"
-        
-            }
-        
-        [System.Reflection.Assembly]::LoadFrom($adal) | Out-Null
-        
-        [System.Reflection.Assembly]::LoadFrom($adalforms) | Out-Null
-        
-        $clientId = "d1ddf0e4-d672-4dae-b554-9d5bdfd93547"
-        
-        $redirectUri = "urn:ietf:wg:oauth:2.0:oob"
-        
-        $resourceAppIdURI = "https://graph.microsoft.com"
-        
-        $authority = "https://login.microsoftonline.com/$Tenant"
-        
-            try {
-        
-            $authContext = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext" -ArgumentList $authority
-        
-            # https://msdn.microsoft.com/en-us/library/azure/microsoft.identitymodel.clients.activedirectory.promptbehavior.aspx
-            # Change the prompt behaviour to force credentials each time: Auto, Always, Never, RefreshSession
-        
-            $platformParameters = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters" -ArgumentList "Auto"
-        
-            $userId = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.UserIdentifier" -ArgumentList ($User, "OptionalDisplayableId")
-        
-            $authResult = $authContext.AcquireTokenAsync($resourceAppIdURI,$clientId,$redirectUri,$platformParameters,$userId).Result
-        
-                # If the accesstoken is valid then create the authentication header
-        
-                if($authResult.AccessToken){
-        
-                # Creating header for Authorization token
-        
-                $authHeader = @{
-                    'Content-Type'='application/json'
-                    'Authorization'="Bearer " + $authResult.AccessToken
-                    'ExpiresOn'=$authResult.ExpiresOn
-                    }
-        
-                return $authHeader
-        
-                }
-        
-                else {
-        
-                Write-Host
-                Write-Host "Authorization Access Token is null, please re-run authentication..." -ForegroundColor Red
-                Write-Host
-                break
-        
-                }
-        
-            }
-        
-            catch {
-        
-            write-host $_.Exception.Message -f Red
-            write-host $_.Exception.ItemName -f Red
-            write-host
-            break
-        
-            }
-        
+        # Check if more than one result was returned; if so, throw an error
+        If ($deviceInfo.'@odata.Count' -gt 1) { 
+            throw "More than one device record returned. If utilizing the DeviceName parameter, try the Serial, IMEI, or DeviceID instead."
+        }
+
+        # Set the wipe URI
+        $wipeUri = "$managedDevicesUri('$($deviceInfo.Value.Id)')/wipe"
+        Write-Host "WipeUri is: $wipeUri"
+
+        If ($OS -eq 'Windows') {
+            # Wipe the device
+            Invoke-MgGraphRequest -Method POST -Uri $wipeUri
+            Write-Host "Wipe initiated on: " -NoNewline
+            Write-Host $deviceInfo.Value.deviceName -ForegroundColor Red
+        } ElseIf ($OS -eq 'Android') {
+            # Wipe the device
+            Invoke-MgGraphRequest -Method POST -Uri $wipeUri
+            Write-Host "Wipe initiated on: " -NoNewline
+            Write-Host $deviceInfo.Value.deviceName -ForegroundColor Red
+        } ElseIf ($OS -eq 'MacOs') {
+            # Get the ActivationLockBypassCode
+            $albCode = (Invoke-MgGraphRequest -Method GET -Uri "$managedDevicesUri('$($deviceInfo.Value.Id)')/`?`$select=activationLockBypassCode")['activationLockBypassCode']
+            # Write-Host on the fetched code
+            Write-Host "The ActivateLock Bypass Code is: " -NoNewline
+            Write-Host $albCode -ForegroundColor Red
+            # Also, export the code to a local file
+            Export-ALBCode
+            # Kick off an activation lock bypass (is there a way to validate this?)
+            Invoke-MgGraphRequest -Method POST -Uri "$managedDevicesUri/$($deviceInfo.Value.Id)/microsoft.graph.bypassActivationLock"
+            # Wipe the device
+            Invoke-MgGraphRequest -Method POST -Uri $wipeUri
+            Write-Host "Wipe initiated on: " -NoNewline
+            Write-Host $deviceInfo.Value.deviceName -ForegroundColor Red
+        } ElseIf ($OS -eq 'iOS') {
+            # Get the ActivationLockBypassCode
+            $albCode = (Invoke-MgGraphRequest -Method GET -Uri "$managedDevicesUri('$($deviceInfo.Value.Id)')/`?`$select=activationLockBypassCode")['activationLockBypassCode']
+            # Write-Host on the fetched code
+            Write-Host "The ActivateLock Bypass Code is: " -NoNewline
+            Write-Host $albCode -ForegroundColor Red
+            # Also, export the code to a local file
+            Export-ALBCode
+            # Kick off an activation lock bypass (is there a way to validate this?)
+            Invoke-MgGraphRequest -Method POST -Uri "$managedDevicesUri/$($deviceInfo.Value.Id)/microsoft.graph.bypassActivationLock"
+            # Wipe the device
+            Invoke-MgGraphRequest -Method POST -Uri $wipeUri
+            Write-Host "Wipe initiated on: " -NoNewline
+            Write-Host $deviceInfo.Value.deviceName -ForegroundColor Red
+        }
+
+    } End {
+        # Any cleanup code here
     }
-
-    # Authenticate the $Username with Azure and get the $authToken via the Get-AuthToken function
-    $authToken = Get-AuthToken -User $Username
-
-    # Set the $deviceURI which will be used to get the Device ID
-    $deviceURI = "https://graph.microsoft.com/beta/deviceManagement/managedDevices/`?`$filter=deviceName eq '$graphDeviceName'"
-
-    # Invoke REST to GET the Device ID via Graph
-    $graphDeviceID = (Invoke-RestMethod -Method GET -Uri $deviceURI -Headers $authToken).Value.Id
-
-    # Set the $wipeURI with the Device ID
-    $wipeURI = "https://graph.microsoft.com/beta/deviceManagement/managedDevices/$graphDeviceID/wipe"
-
-    # Invoke REST to POST the wipe URI for the Device ID
-    Invoke-RestMethod -Method POST -Uri $wipeUri -Headers $authToken
 }
