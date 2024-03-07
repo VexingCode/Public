@@ -1,6 +1,3 @@
-# WIP: ParameterSetNames causing issues; researching...
-# Error: Invoke-DevDeviceWipe: Parameter set cannot be resolved using the specified named parameters. One or more parameters issued cannot be used together or an insufficient number of parameters were provided.
-
 Function Invoke-DevDeviceWipe {
     [CmdletBinding(SupportsShouldProcess)]
     Param (
@@ -9,8 +6,7 @@ Function Invoke-DevDeviceWipe {
         [string]
         $OS,
         # Graph return: deviceName
-        [Parameter(ParameterSetName='W')]
-        [Parameter(ParameterSetName='M')]
+        [Parameter()]
         [string]
         $DeviceName,
         # Graph return: id
@@ -18,15 +14,10 @@ Function Invoke-DevDeviceWipe {
         [string]
         $DeviceId,
         # Graph return: imei
-        [Parameter(ParameterSetName='A')]
-        [Parameter(ParameterSetName='i')]
+        [Parameter()]
         [string]
         $DeviceIMEI,
         # Graph return: serialNumber
-        [Parameter(ParameterSetName='W')]
-        [Parameter(ParameterSetName='A')]
-        [Parameter(ParameterSetName='M')]
-        [Parameter(ParameterSetName='i')]
         [Parameter()]
         [string]
         $DeviceSerial
@@ -34,24 +25,18 @@ Function Invoke-DevDeviceWipe {
 
     Begin {
         Switch ($OS) {
-            'Windows' {
-                If ((($null -ne $DeviceName) -and ($null -ne $DeviceId) -and ($null -ne $DeviceSerial)) -gt 1) {
-                    Throw "For Windows, you can only specify one of DeviceName, DeviceId, or DeviceSerial."
+            {$_ -in ('Windows', 'MacOS')} {
+                If ($DeviceIMEI) {
+                    Throw "For $_, you cannot specify a DeviceIMEI."
+                } ElseIf ((($null -ne $DeviceName) -and ($null -ne $DeviceId) -and ($null -ne $DeviceSerial)) -gt 1) {
+                    Throw "For $_, you can only specify one of DeviceName, DeviceId, or DeviceSerial."
                 }
             }
-            'Android' {
-                If ((($null -ne $DeviceId) -and ($null -ne $DeviceIMEI) -and ($null -ne $DeviceSerial)) -gt 1) {
-                    Throw "For Android, you can only specify one of DeviceId, DeviceIMEI, or DeviceSerial."
-                }
-            }
-            'iOS' {
-                If ((($null -ne $DeviceId) -and ($null -ne $DeviceIMEI) -and ($null -ne $DeviceSerial)) -gt 1) {
-                    Throw "For iOS, you can only specify one of DeviceId, DeviceIMEI, or DeviceSerial."
-                }
-            }
-            'MacOS' {
-                If ((($null -ne $DeviceName) -and ($null -ne $DeviceId) -and ($null -ne $DeviceSerial)) -gt 1) {
-                    Throw "For MacOS, you can only specify one of DeviceName, DeviceId, or DeviceSerial."
+            {$_ -in ('Android', 'iOS')} {
+                If ($DeviceName) {
+                    Throw "For $_, you cannot specify a DeviceName."
+                } ElseIf ((($null -ne $DeviceId) -and ($null -ne $DeviceIMEI) -and ($null -ne $DeviceSerial)) -gt 1) {
+                    Throw "For $_, you can only specify one of DeviceId, DeviceIMEI, or DeviceSerial."
                 }
             }
         }
@@ -115,7 +100,6 @@ Function Invoke-DevDeviceWipe {
 
         # Get the device information and set the wipe Uri
         $deviceInfo = Invoke-MgGraphRequest -Method GET -Uri $deviceUri
-        Write-Host "DeviceInfo.Value.Id is: $($deviceInfo.Value.Id)"
         If ($null -eq $DeviceId) {
             $DeviceId = $deviceInfo.Value.Id
         }
@@ -127,7 +111,6 @@ Function Invoke-DevDeviceWipe {
 
         # Set the wipe URI
         $wipeUri = "$managedDevicesUri('$($deviceInfo.Value.Id)')/wipe"
-        Write-Host "WipeUri is: $wipeUri"
 
         If ($OS -eq 'Windows') {
             # Wipe the device
