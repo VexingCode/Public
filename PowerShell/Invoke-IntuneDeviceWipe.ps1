@@ -42,9 +42,9 @@ Function Invoke-DevDeviceWipe {
         }
     } Process {
         Function Export-ALBCode {
-            # Create the CoS folder if it doesn't exist
-            If (!(Test-Path 'C:\ProgramData\CoS')) {
-                New-Item 'C:\ProgramData\CoS' -ItemType Directory | Out-Null
+            # Create the Con folder if it doesn't exist
+            If (!(Test-Path 'C:\ProgramData\Con')) {
+                New-Item 'C:\ProgramData\Con' -ItemType Directory | Out-Null
             }
     
             # Set the parameters, and block
@@ -58,10 +58,10 @@ Function Invoke-DevDeviceWipe {
             )
     
             # Create the file, with the content
-            Set-Content -Path "C:\ProgramData\CoS\$fileName" -Value $fileValueBlock
+            Set-Content -Path "C:\ProgramData\Con\$fileName" -Value $fileValueBlock
     
             Write-Host "The information has been saved, locally, to " -NoNewline
-            Write-Host "C:\ProgramData\CoS\" -NoNewline -ForegroundColor Green
+            Write-Host "C:\ProgramData\Con\" -NoNewline -ForegroundColor Green
             Write-Host $fileName -ForegroundColor Cyan
         }
 
