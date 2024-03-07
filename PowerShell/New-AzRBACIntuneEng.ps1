@@ -1,6 +1,6 @@
 # Create AzureAD 'Intune Engineer' role information
 $displayName = "Intune Engineer"
-$description = "Grants permissions similar to an Intune Administrators, without full control. Intended for team members that are not Intune Administrators."
+$description = "Grants permissions similar to an Intune Administrators, without full control. Intended for the Device Engineering team members that are not Intune Administrators."
 $templateId = (New-Guid).Guid
  
 # Set of permissions to grant
@@ -32,4 +32,4 @@ $allowedResourceAction =
 $rolePermissions = @{'allowedResourceActions'= $allowedResourceAction}
  
 # Create new custom admin role
-$customAdmin = New-AzureADMSRoleDefinition -RolePermissions $rolePermissions -DisplayName $displayName -Description $description -TemplateId $templateId -IsEnabled $true
+$customAdmin = New-MgRoleManagementDirectoryRoleDefinition -RolePermissions $rolePermissions -DisplayName $displayName -IsEnabled -Description $description -TemplateId $templateId
