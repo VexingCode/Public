@@ -36,7 +36,7 @@ Install-RequiredModule Microsoft.Graph.DeviceManagement.Administration -Verbose
 Select-MgProfile -Name Beta
 
 # Connect to Microsoft Graph, with the specified scope
-# Keep in mind, the account running this must have the appropriate permissions6
+# Keep in mind, the account running this must have the appropriate permissions
 Connect-MgGraph -Scopes DeviceManagementRBAC.ReadWrite.All
 
 # Set the URI path
@@ -47,7 +47,7 @@ $json = @'
 	{
     "@odata.context": "https://graph.microsoft.com/beta/$metadata#deviceManagement/roleDefinitions/$entity",
     "@odata.type": "#microsoft.graph.deviceAndAppManagementRoleDefinition",
-    "displayName": "Intune Engineer Test",
+    "displayName": "Intune Engineer",
     "description": "Grants permissions similar to an Intune Administrators, without full control. Intended for the team members that are not Intune Administrators.",
     "isBuiltInRoleDefinition": false,
     "isBuiltIn": false,
