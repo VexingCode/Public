@@ -14,8 +14,8 @@
 
 # Define variables
 $Directory = "C:\Temp"
-$KeyFile = Join-Path $Directory  "aSAK.key"
-$PasswordFile = Join-Path $Directory "aSAP.txt"
+$KeyFile = Join-Path $Directory  "SAK.key"
+$PasswordFile = Join-Path $Directory "SAP.txt"
 
 # Text for the console
 Write-Host "CREATE SECURE PASSWORD FILE"
@@ -37,7 +37,7 @@ Write-Host ""
 try {
 	$Key = New-Object Byte[] 32
 	[Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($Key)
-	$Key | out-file $KeyFile
+	$Key | out-file $KeyFile -Force
         $KeyFileCreated = $True
 	Write-Host "The key file $KeyFile was created successfully"
 } catch {
@@ -50,7 +50,7 @@ Start-Sleep 2
 If ( $KeyFileCreated -eq $True ) {
 	try {
 		$Key = Get-Content $KeyFile
-		$Password | ConvertFrom-SecureString -key $Key | Out-File $PasswordFile
+		$Password | ConvertFrom-SecureString -key $Key | Out-File $PasswordFile -Force
 		Write-Host "The key file $PasswordFile was created successfully"
 	} catch {
 		write-Host "An error occurred trying to create the password file $PasswordFile (error: $($Error[0])"
