@@ -1,4 +1,4 @@
-function New-IntuneApplicationGroup {
+Function New-IntuneApplicationGroup {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory,Position=0)]
@@ -32,58 +32,35 @@ function New-IntuneApplicationGroup {
     }
 
     Function Clean-String {
-        param (
-            [string]$InputString
-        )
-        $cleanedString = $InputString.Trim() -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '-'
-        return $cleanedString
+        param ([string]$InputString)
+        return ($InputString.Trim() -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '-')
     }
 
     $cleanVendor = Clean-String -InputString $ProductVendor
     $cleanName = Clean-String -InputString $ProductName
 
-    $deploymentTypes = If ($DeploymentType -eq 'All') { 
-        'Available', 'Required', 'Update', 'Uninstall'
-    } Else { 
-        $DeploymentType
+    $deploymentTypes = If ($DeploymentType -eq 'All') { 'Available', 'Required', 'Update', 'Uninstall' } Else { $DeploymentType }
+    $deploymentTargets = If ($DeploymentTarget -eq 'Both') { 'Device', 'User' } Else { $DeploymentTarget }
+
+    $typeMappings = @{
+        'Available' = @{ Name = 'AIA'; Desc = 'Available install' }
+        'Required'  = @{ Name = 'AIR'; Desc = 'Required install' }
+        'Update'    = @{ Name = 'AUD'; Desc = 'Required update' }
+        'Uninstall' = @{ Name = 'AUR'; Desc = 'Required uninstall' }
     }
-    $deploymentTargets = If ($DeploymentTarget -eq 'Both') { 
-        'Device','User'
-    } Else { 
-        $DeploymentTarget
+
+    $targetMappings = @{
+        'Device' = @{ Name = 'D'; Desc = 'devices' }
+        'User'   = @{ Name = 'U'; Desc = 'users' }
     }
 
     ForEach ($dt in $deploymentTypes) {
-        switch ($dt) {
-            'Available' {
-                $nameDT = 'AIA'
-                $descDT = 'Available install'
-            }
-            'Required' {
-                $nameDT = 'AIR'
-                $descDT = 'Required install'
-            }
-            'Update' {
-                $nameDT = 'AUD'
-                $descDT = 'Required update'
-            }
-            'Uninstall' {
-                $nameDT = 'AUR'
-                $descDT = 'Required uninstall'
-            }
-        }
+        $nameDT = $typeMappings[$dt].Name
+        $descDT = $typeMappings[$dt].Desc
 
         ForEach ($tgt in $deploymentTargets) {
-            switch ($tgt) {
-                'Device' {
-                    $nameTgt = 'D'
-                    $descTgt = 'devices'
-                }
-                'User' {
-                    $nameTgt = 'U'
-                    $descTgt = 'users'
-                }
-            }
+            $nameTgt = $targetMappings[$tgt].Name
+            $descTgt = $targetMappings[$tgt].Desc
 
             $compiledName = "MEM-$OperatingSystem-$nameDT-$cleanVendor-$cleanName-$nameTgt"
             $compiledDesc = "$descDT group targeting $descTgt, for the $ProductVendor $ProductName application."
@@ -99,9 +76,8 @@ function New-IntuneApplicationGroup {
             New-MgBetaGroup -Body $Body
 
             If ($ExclusionGroup -eq 'Yes' -or $ExclusionGroup -eq 'Both') {
-                $descDTLower = $descDT.ToLower()
                 $compiledNameEx = "MEM-$OperatingSystem-$nameDT-ExGrp-$cleanVendor-$cleanName-$nameTgt"
-                $compiledDescEx = "Use for exclusions to the $descDTLower group targeting $descTgt, for the $ProductVendor $ProductName application."
+                $compiledDescEx = "Use for exclusions to the $($descDTLower.ToLower()) group targeting $descTgt, for the $ProductVendor $ProductName application."
 
                 $BodyEx = @{
                     DisplayName     = $compiledNameEx
