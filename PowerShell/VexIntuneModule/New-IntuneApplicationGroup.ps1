@@ -132,12 +132,17 @@ Function New-IntuneApplicationGroup {
         Name:           New-IntuneApplicationGroup.ps1
         Author:         Ahnamataeus Vex
         Version:        1.0.0
-        Release Date:   2024-09-09
+        Release Date:   2024-09-05
             Updated:
-                Version 1.0.1: 2024-09-10
+                Version 1.0.1: 2024-09-05
+                    - Streamlined the function
+                Version 1.0.2: 2024-09-10
                     - Added the help section
                     - Fixed typo in #Requires statement
                     - Fixed typo in the Exclusion Group description creation.
+                Version 1.0.3: 2024-09-10
+                    - Updated the Clean-String function to account for some other scenarios that
+                    could happen
     #>
     
     [CmdletBinding()]
@@ -174,8 +179,31 @@ Function New-IntuneApplicationGroup {
 
     Function Clean-String {
         param ([string]$InputString)
-        return ($InputString.Trim() -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '-')
+        
+        # Trim leading and trailing spaces
+        $cleanedString = $InputString.Trim()
+        
+        # Remove non-alphanumeric characters except hyphens
+        $cleanedString = $cleanedString -replace '[^a-zA-Z0-9\s-]', ''
+        
+        # Remove spaces around hyphens
+        $cleanedString = $cleanedString -replace '\s*-\s*', '-'
+        
+        # Replace multiple hyphens with a single hyphen
+        $cleanedString = $cleanedString -replace '-+', '-'
+        
+        # Replace spaces with hyphens
+        $cleanedString = $cleanedString -replace '\s+', '-'
+        
+        return $cleanedString
     }
+    
+    # Examples
+    Write-Output (Clean-String "Clear - Spaces") # Output: "Clear-Spaces"
+    Write-Output (Clean-String "Clear---Extra Hypens") # Output: "Clear-Extra-Hypens"
+    Write-Output (Clean-String "Leave-Hypens-In_Place") # Output: "Leave-Hypens-In-Place"
+    Write-Output (Clean-String "Clear -- Spaces----And_ -*Extra Hypens") # Output: "Clear-Spaces-And-Extra-Hypens"
+    
 
     $cleanVendor = Clean-String -InputString $ProductVendor
     $cleanName = Clean-String -InputString $ProductName
