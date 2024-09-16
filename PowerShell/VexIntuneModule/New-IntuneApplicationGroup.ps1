@@ -1,4 +1,7 @@
 Function New-IntuneApplicationGroup {
+
+    #Requires -Modules Microsoft.Graph.Beta.Groups
+
     <#
     .SYNOPSIS
         Function to standardize the creation of Application deployment groups for Intune.
@@ -171,8 +174,6 @@ Function New-IntuneApplicationGroup {
         $ExclusionGroup
     )
 
-    #Requires -Modules Microsoft.Graph.Beta.Groups
-
     If (!(Get-MgContext)) {
         Connect-MgGraph -NoWelcome
     }
@@ -197,13 +198,6 @@ Function New-IntuneApplicationGroup {
         
         return $cleanedString
     }
-    
-    # Examples
-    Write-Output (Clean-String "Clear - Spaces") # Output: "Clear-Spaces"
-    Write-Output (Clean-String "Clear---Extra Hypens") # Output: "Clear-Extra-Hypens"
-    Write-Output (Clean-String "Leave-Hypens-In_Place") # Output: "Leave-Hypens-In-Place"
-    Write-Output (Clean-String "Clear -- Spaces----And_ -*Extra Hypens") # Output: "Clear-Spaces-And-Extra-Hypens"
-    
 
     $cleanVendor = Clean-String -InputString $ProductVendor
     $cleanName = Clean-String -InputString $ProductName
