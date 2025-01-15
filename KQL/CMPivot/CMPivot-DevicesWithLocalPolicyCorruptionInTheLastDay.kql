@@ -1,0 +1,8 @@
+// Devices with Local Policy Corruption in the past day
+
+WinEvent('System', 1d)
+| summarize dcount(Device) by ID, Device
+| where ID == 1096
+| join OS
+| summarize count() by substring( strcat(Caption, ' ', Version), 10 )
+| render barchart with (title='Local Policy Corrupt', xtitle='OS', ytitle='Number of Devices')

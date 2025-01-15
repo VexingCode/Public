@@ -1,0 +1,4 @@
+// List all Ethernet addresses that are up
+
+IPConfig 
+| where ((InterfaceAlias like 'Ethernet') and (Status == 'Up'))

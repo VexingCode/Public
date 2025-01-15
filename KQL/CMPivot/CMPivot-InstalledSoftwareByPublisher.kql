@@ -1,0 +1,4 @@
+// Installed software from a specific Publisher on all devices
+
+InstalledSoftware
+| where Publisher == 'Publisher'

@@ -1,0 +1,16 @@
+select SMS_R_SYSTEM.ResourceID,
+    SMS_R_SYSTEM.ResourceType,
+    SMS_R_SYSTEM.Name,
+    SMS_R_SYSTEM.SMSUniqueIdentifier,
+    SMS_R_SYSTEM.ResourceDomainORWorkgroup,
+    SMS_R_SYSTEM.Client
+from SMS_R_System
+where SMS_R_System.Name in (
+        select SMS_StatusMessage.MachineName
+        from SMS_StatusMessage
+            LEFT OUTER JOIN SMS_StatMsgAttributes ON SMS_StatusMessage.RecordID = SMS_StatMsgAttributes.RecordID
+            LEFT OUTER JOIN SMS_StatMsgInsStrings ON SMS_StatusMessage.RecordID = SMS_StatMsgInsStrings.RecordID
+        where SMS_StatusMessage.MessageID = "2719"
+            AND SMS_StatusMessage.Component = "SMS_INVENTORY_DATA_LOADER"
+            and DateDiff(dd, SMS_StatusMessage.Time, GetDate()) < 7
+    )

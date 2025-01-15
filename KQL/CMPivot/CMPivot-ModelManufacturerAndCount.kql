@@ -1,0 +1,5 @@
+// Grab all computer models and manufacturers; count() by Model
+
+ComputerSystem
+| project Manufacturer, Model
+| summarize count() by Model, Manufacturer

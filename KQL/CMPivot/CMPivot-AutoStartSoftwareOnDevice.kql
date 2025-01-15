@@ -1,0 +1,4 @@
+// List all AutoStart software on specific device
+
+AutoStartSoftware 
+| where (Device == 'DEVICENAME')

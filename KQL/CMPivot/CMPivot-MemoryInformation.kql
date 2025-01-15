@@ -1,0 +1,5 @@
+// Device memory information
+
+Memory
+| project Device, AvailableVirtualMemInMB=AvailableVirtualMemory/1024, TotalPageFileSpaceInMB=TotalPageFileSpace/1024, TotalPhysicalMemoryInMB=TotalPhysicalMemory/1024, TotalVirtualMemoryInMB=TotalVirtualMemory/1024
+| order by Device asc

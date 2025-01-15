@@ -1,0 +1,6 @@
+// Check SMBv1 Status
+
+SMBConfig
+| summarize Enabled=countif(EnableSMB1Protocol == true) by Device
+| summarize NumberOfDevices=count() by iif(Enabled==1,'Enabled','Disabled')
+| render barchart with (title='SMBv1 Status', xtitle='Status', ytitle='Number of Devices')

@@ -1,0 +1,1 @@
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-Metabase -All

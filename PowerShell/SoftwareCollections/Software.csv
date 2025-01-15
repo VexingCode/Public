@@ -1,0 +1,167 @@
+ProductName,Publisher,DisplayName,Operator
+Adobe Acrobat DC,Adobe,Acrobat DC,equal
+Adobe Acrobat Reader DC,Adobe,Acrobat Reader DC,equal
+Articulate 360,Articulate,Articulate 360,equal
+Articulate Peek,Articulate,Peek,equal
+Articulate Peek 360,Articulate,Peek 360,equal
+Articulate Replay,Articulate,Replay,equal
+Articulate Replay 360,Articulate,Replay 360,equal
+Articulate Storyline,Articulate,Storyline,equal
+Articulate Storyline 2,Articulate,Storyline 2,equal
+Articulate Storyline 3,Articulate,Storyline 3,equal
+Articulate Storyline 360,Articulate,Storyline 360,equal
+Articulate Studio 360,Articulate,Studio 360,equal
+Autodesk 360,Autodesk,Autodesk 360,equal
+Autodesk 3ds Max 2020,Autodesk,3ds Max 2020,equal
+Autodesk Advance Steel 2017,Autodesk,Advance Steel 2017,equal
+Autodesk Advance Steel 2020,Autodesk,Advance Steel 2020,LikeBeginsWith
+Autodesk Advance Steel 2023,Autodesk,Advance Steel 2023,LikeBeginsWith
+Autodesk AutoCAD 2015,Autodesk,AutoCAD 2015,LikeBeginsWith
+Autodesk AutoCAD 2017,Autodesk,AutoCAD 2017,LikeBeginsWith
+Autodesk AutoCAD 2020,Autodesk,AutoCAD 2020,LikeBeginsWith
+Autodesk AutoCAD 2022,Autodesk,AutoCAD 2022,LikeBeginsWith
+Autodesk AutoCAD 2023,Autodesk,AutoCAD 2023,LikeBeginsWith
+Autodesk AutoCAD Architecture 2017 - English,Autodesk,AutoCAD Architecture 2017,equal
+Autodesk AutoCAD Architecture 2017 SP1,Autodesk,AutoCAD Architecture 2017 SP1,equal
+Autodesk AutoCAD Architecture 2020,Autodesk,AutoCAD Architecture 2020,LikeBeginsWith
+Autodesk AutoCAD Architecture 2023,Autodesk,AutoCAD Architecture 2023,LikeBeginsWith
+Autodesk AutoCAD Civil 3D 2014,Autodesk,AutoCAD Civil 3D 2014,LikeBeginsWith
+Autodesk AutoCAD Civil 3D 2017,Autodesk,AutoCAD Civil 3D 2017,LikeBeginsWith
+Autodesk AutoCAD Electrical 2015 - English,Autodesk,AutoCAD Electrical 2015,LikeBeginsWith
+Autodesk AutoCAD Electrical 2017 - English,Autodesk,AutoCAD Electrical 2017,equal
+Autodesk AutoCAD Electrical 2020 - English,Autodesk,AutoCAD Electrical 2020,equal
+Autodesk AutoCAD Electrical 2023 - English,Autodesk,AutoCAD Electrical 2023,equal
+Autodesk AutoCAD LT 2017 - English,Autodesk,AutoCAD LT 2017,equal
+Autodesk AutoCAD LT 2019 - English,Autodesk,AutoCAD LT 2019,equal
+Autodesk AutoCAD LT 2020 - English,Autodesk,AutoCAD LT 2020,equal
+Autodesk AutoCAD LT 2023 - English,Autodesk,AutoCAD LT 2023,equal
+Autodesk AutoCAD Map 3D 2015,Autodesk,AutoCAD Map 3D 2015,LikeBeginsWith
+Autodesk AutoCAD Map 3D 2017,Autodesk,AutoCAD Map 3D 2017,LikeBeginsWith
+Autodesk AutoCAD Map 3D 2020,Autodesk,AutoCAD Map 3D 2020,LikeBeginsWith
+Autodesk AutoCAD Map 3D 2021,Autodesk,AutoCAD Map 3D 2021,LikeBeginsWith
+Autodesk AutoCAD Map 3D 2022,Autodesk,AutoCAD Map 3D 2022,LikeBeginsWith
+Autodesk AutoCAD Map 3D 2023,Autodesk,AutoCAD Map 3D 2023,LikeBeginsWith
+Autodesk AutoCAD Mechanical 2017 - English,Autodesk,AutoCAD Mechanical 2017,equal
+Autodesk AutoCAD Mechanical 2020 - English,Autodesk,AutoCAD Mechanical 2020,equal
+Autodesk AutoCAD Mechanical 2023 - English,Autodesk,AutoCAD Mechanical 2023,equal
+Autodesk AutoCAD MEP 2020 - English,Autodesk,AutoCAD MEP 2020,equal
+Autodesk AutoCAD MEP 2023 - English,Autodesk,AutoCAD MEP 2023,equal
+Autodesk AutoCAD Plant 3D 2017 - English,Autodesk,AutoCAD Plant 3D 2017,equal
+Autodesk AutoCAD Plant 3D 2020 - English,Autodesk,AutoCAD Plant 3D 2020,equal
+Autodesk AutoCAD Plant 3D 2021 - English,Autodesk,AutoCAD Plant 3D 2021,equal
+Autodesk AutoCAD Plant 3D 2023 - English,Autodesk,AutoCAD Plant 3D 2023,equal
+Autodesk Buzzsaw,Autodesk,Buzzsaw,equal
+Autodesk Civil 3D 2020,Autodesk,Civil 3D,equal
+Autodesk Civil 3D 2021,Autodesk,Civil 3D,equal
+Autodesk Civil 3D 2022,Autodesk,Civil 3D,equal
+Autodesk Design Review,Autodesk,Design Review,LikeBeginsWith
+Autodesk Desktop Connector,Autodesk,Desktop Connector,equal
+Autodesk DWG TrueView 2014,Autodesk,DWG TrueView 2014,equal
+Autodesk DWG TrueView 2015 - English,Autodesk,DWG TrueView 2015,equal
+Autodesk DWG TrueView 2017 - English,Autodesk,DWG TrueView 2017,equal
+Autodesk DWG TrueView 2019 - English,Autodesk,DWG TrueView 2019,equal
+Autodesk DWG TrueView 2020 - English,Autodesk,DWG TrueView 2020,equal
+Autodesk DWG TrueView 2022 - English,Autodesk,DWG TrueView 2022,equal
+Autodesk DWG TrueView 2023 - English,Autodesk,DWG TrueView 2023,equal
+Autodesk InfraWorks,Autodesk,Infraworks,equal
+Autodesk InfraWorks 360,Autodesk,Infraworks 360,equal
+Autodesk Inventor Professional 2017,Autodesk,Inventor Professional 2017,LikeBeginsWith
+Autodesk Inventor Professional 2020,Autodesk,Inventor Professional 2020,equal
+Autodesk Navisworks Manage 2017,Autodesk,Navisworks Manage 2017,equal
+Autodesk Navisworks Manage 2020,Autodesk,Navisworks Manage 2020,equal
+Autodesk Navisworks Manage 2023,Autodesk,Navisworks Manage 2023,equal
+Autodesk ReCap,Autodesk,ReCap,equal
+Autodesk ReCap 360,Autodesk,ReCap 360,equal
+Autodesk Revit 2017,Autodesk,Revit 2017,equal
+Autodesk Revit 2020,Autodesk,Revit 2020,equal
+Autodesk Revit 2023,Autodesk,Revit 2023,equal
+Autodesk Vehicle Tracking 2017 (64 bit) Core,Autodesk,Vehicle Tracking 2017 (64-bit),equal
+Autodesk Vehicle Tracking 2020 (64 bit) Core,Autodesk,Vehicle Tracking 2020 (64-bit),equal
+Autodesk Vehicle Tracking 2021 (64 bit) Core,Autodesk,Vehicle Tracking 2021 (64-bit),equal
+Autodesk Vehicle Tracking 2022 (64 bit) Core,Autodesk,Vehicle Tracking 2022 (64-bit),equal
+Autodesk Vehicle Tracking 2023 (64 bit) Core,Autodesk,Vehicle Tracking 2023 (64-bit),equal
+CADVoice,Locution,CADVoice,LikeBeginsWith
+Cisco AnyConnect Secure Mobility Client,Cisco,AnyConnect Secure Mobility Client,equal
+Cisco Jabber,Cisco,Jabber,equal
+Cisco Webex Meetings,Cisco,Webex Meetings,equal
+Cisco Webex Productivity Tools,Cisco,Webex Productivity Tools,equal
+Class for Windows 8.00,The Active Network,Class for Windows,equal
+CutePDF Writer,CutePDF,CutePDF Writer,LikeBeginsWith
+DameWare Mini Remote Control Service,SolarWinds,DameWare Mini Remote Control Service,equal
+Dameware Settings,Solarwinds,Dameware Settings,equal
+Dragon,Nuance,Dragon NaturallySpeaking,equal
+Dragon 14,Nuance,Dragon NaturallySpeaking 14,equal
+Dragon 15,Nuance,Dragon NaturallySpeaking 15,equal
+FireEye Endpoint Agent,Trellix,Endpoint Agent,equal
+FlexiPRINT Avery Dennison Edition,SA International,FlexiPRINT Avery Dennison Edition,LikeBeginsWith
+Google Chrome,Google,Chrome,equal
+Granite XP,CUES Inc,Granite XP,equal
+GraniteNet,CUES Inc,GraniteNet,equal
+Java(TM) 6 Update 30,Oracle,Java 6 Update 30,equal
+Java(TM) 6 Update 6,Oracle,Java 6 Update 6,equal
+LiveMUM V10.1.3,Deccan International,LiveMUM,equal
+LsAgent,Lansweeper,Lansweeper Agent,equal
+Malwarebytes version,Malwarebytes,Malwarebytes Anti-Malware,LikeBeginsWith
+Malwarebytes Anti-Exploit,Malwarebytes,Malwarebytes Anti-Exploit,LikeBeginsWith
+Malwarebytes' Managed Client,Malwarebytes,Malwarebytes Managed Client,equal
+Malwarebytes Management Console,Malwarebytes,Malwarebytes Management Console,equal
+Microsoft Intune Management Extension,Microsoft,Intune Management Extension,equal
+Microsoft Power BI Desktop (x64),Microsoft,Power BI Desktop (x64),equal
+Microsoft PowerBI Desktop (x64),Microsoft,PowerBI Desktop (x64),equal
+Microsoft Project - en-us,Microsoft,Project - en-us,equal
+Microsoft Search in Bing,Microsoft,Search in Bing,equal
+Microsoft Silverlight,Microsoft,Silverlight,equal
+Microsoft Visio MUI (English) 2013,Microsoft,Visio MUI (English) 2013,equal
+Microsoft Visio Professional 2013,Microsoft,Visio Professional 2013,equal
+Microsoft Visual C++ 2005 Redistributable,Microsoft,Visual C++ 2005 Redistributable,equal
+Microsoft Visual C++ 2005 Redistributable (x64),Microsoft,Visual C++ 2005 Redistributable (x64),equal
+Microsoft Visual C++ 2010  x64 Redistributable - 10.0.40219,Microsoft,Visual C++ 2010 x64 Redistributable - 10.0.40219,equal
+Microsoft Visual C++ 2010  x86 Redistributable - 10.0.40219,Microsoft,Visual C++ 2010 x86 Redistributable - 10.0.40219,equal
+Microsoft Visual C++ 2012 Redistributable (x64) - 11.0.60610,Microsoft,Visual C++ 2012 Redistributable (x64) - 11.0.60610,equal
+Microsoft Visual C++ 2012 Redistributable (x86) - 11.0.60610,Microsoft,Visual C++ 2012 Redistributable (x86) - 11.0.60610,equal
+Microsoft Visual C++ 2012 x64 Additional Runtime - 11.0.60610,Microsoft,Visual C++ 2012 x64 Additional Runtime - 11.0.60610,equal
+Microsoft Visual C++ 2012 x64 Minimum Runtime - 11.0.60610,Microsoft,Visual C++ 2012 x64 Minimum Runtime - 11.0.60610,equal
+Microsoft Visual C++ 2012 x86 Additional Runtime - 11.0.60610,Microsoft,Visual C++ 2012 x86 Additional Runtime - 11.0.60610,equal
+Microsoft Visual C++ 2012 x86 Minimum Runtime - 11.0.60610,Microsoft,Visual C++ 2012 x86 Minimum Runtime - 11.0.60610,equal
+Microsoft Visual C++ 2013 Redistributable (x64) - 12.0.30501,Microsoft,Visual C++ 2013 Redistributable (x64) - 12.0.30501,equal
+Microsoft Visual C++ 2013 Redistributable (x64) - 12.0.40660,Microsoft,Visual C++ 2013 Redistributable (x64) - 12.0.40660,equal
+Microsoft Visual C++ 2013 Redistributable (x86) - 12.0.40660,Microsoft,Visual C++ 2013 Redistributable (x86) - 12.0.40660,equal
+Microsoft Visual C++ 2013 x64 Additional Runtime - 12.0.40660,Microsoft,Visual C++ 2013 x64 Additional Runtime - 12.0.40660,equal
+Microsoft Visual C++ 2013 x64 Minimum Runtime - 12.0.40660,Microsoft,Visual C++ 2013 x64 Minimum Runtime - 12.0.40660,equal
+Microsoft Visual C++ 2013 x86 Additional Runtime - 12.0.40660,Microsoft,Visual C++ 2013 x86 Additional Runtime - 12.0.40660,equal
+Microsoft Visual C++ 2013 x86 Minimum Runtime - 12.0.40660,Microsoft,Visual C++ 2013 x86 Minimum Runtime - 12.0.40660,equal
+Microsoft Visual C++ 2015-2019 Redistributable (x64) - 14.28.29914,Microsoft,Visual C++ 2015-2019 Redistributable (x64) - 14.28.29914,equal
+Microsoft Visual C++ 2015-2019 Redistributable (x86) - 14.28.29914,Microsoft,Visual C++ 2015-2019 Redistributable (x86) - 14.28.29914,equal
+Microsoft Visual C++ 2019 X64 Additional Runtime - 14.28.29914,Microsoft,Visual C++ 2019 X64 Additional Runtime - 14.28.29914,equal
+Microsoft Visual C++ 2019 X64 Minimum Runtime - 14.28.29914,Microsoft,Visual C++ 2019 X64 Minimum Runtime - 14.28.29914,equal
+Microsoft Visual C++ 2019 X86 Additional Runtime - 14.28.29914,Microsoft,Visual C++ 2019 X86 Additional Runtime - 14.28.29914,equal
+Microsoft Visual C++ 2019 X86 Minimum Runtime - 14.28.29914,Microsoft,Visual C++ 2019 X86 Minimum Runtime - 14.28.29914,equal
+Nessus Agent (x64),Tenable,Nessus (x64),equal
+NetMotion Mobility Client,NetMotion,Netmotion Mobility Client,equal
+One Identity Offline Password Reset x64,One Identity,Offline Password Reset x64,equal
+One Identity Secure Password Extension x64,One Identity,Secure Password Extension,equal
+PowerShell Studio 2016,SAPIEN,PowerShell Studio 2016,equal
+PowerShell Studio 2017,SAPIEN,PowerShell Studio 2017,equal
+Pulse Secure,Pulse Secure,Pulse Secure,equal
+Rapid7 Insight Agent,Rapid7,Insight Agent,equal
+Redline,Trellix,Redline,equal
+Seattle IT Service Hub,City of Seattle,Seattle IT Service Hub,equal
+Studio 5000 Logix Designer,Rockwell Automation,Studio 5000 Logix Designer,LikeBeginsWith
+SwiftView,SwiftView,SwiftView,equal
+Tableau,Tableau Software,Tableau (All),LikeBeginsWith
+Teams Machine-Wide Installer,Microsoft,Teams Machine-Wide Installer,equal
+Trend Micro OfficeScan Agent,Trend Micro,OfficeScan,equal
+Versaterm CAD Suite,Versaterm,CAD Suite,LikeBeginsWith
+VLC media player,VideoLAN,VLC Media Player,LikeBeginsWith
+VMware Horizon Client,VMware,Horizon Client,equal
+VMware Player,VMware,Player,equal
+VMware Tools,VMware,Tools,equal
+VMware vSphere Client 5.0,VMware,vSphere Client - 5.0,equal
+VMware vSphere Client 5.1,VMware,vSphere Client - 5.1,equal
+VMware vSphere Client 5.5,VMware,vSphere Client - 5.2,equal
+VMware vSphere Client 6.0,VMware,vSphere Client - 6.0,equal
+VMware Workstation,VMware,Workstation,equal
+Vulnerability Protection Agent,Trend Micro,Vulnerability Protection Agent,equal
+Webex,Cisco,Webex,equal
+WordRake for Outlook,WordRake,WordRake for Outlook,equal
+WordRake for Word,WordRake,WordRake for Word,equal

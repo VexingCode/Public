@@ -1,0 +1,1 @@
+Set-Service -Name RemoteRegistry -StartupType Automatic -Status Running

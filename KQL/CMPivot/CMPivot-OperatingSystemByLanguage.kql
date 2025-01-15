@@ -1,0 +1,6 @@
+// Operating System by language
+// https://www.autoitscript.com/autoit3/docs/appendix/OSLangCodes.htm
+// Dec column
+
+OperatingSystem
+| where OSLanguage == 1033

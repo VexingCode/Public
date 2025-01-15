@@ -1,0 +1,4 @@
+// Missing Software Updates
+
+SoftwareUpdate
+| where (Device == 'DEVICENAME')

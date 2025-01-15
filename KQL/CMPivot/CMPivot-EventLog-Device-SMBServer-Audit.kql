@@ -1,0 +1,6 @@
+// SMBServer Audit log for SMBv1 traffic; event ID 3000
+
+WinEvent('Microsoft-Windows-SMBServer/Audit')
+| where ID == 3000
+| distinct Device,Message,ID
+| order by Device desc

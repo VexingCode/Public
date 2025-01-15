@@ -1,0 +1,4 @@
+// Devices missing specific software updates
+
+SoftwareUpdate    
+| where KBArticleIDs == 'KBXXXXXXX'

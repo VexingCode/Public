@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName Windows-Internal-Database).State

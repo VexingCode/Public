@@ -1,0 +1,5 @@
+// Devices that have specific software installed
+
+InstalledSoftware 
+| summarize countif(ProductName == 'YourProductName') by Device 
+| where (countif_ > 0)

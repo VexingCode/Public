@@ -1,0 +1,17 @@
+POST https://graph.microsoft.com/v1.0/roleManagement/directory/roleEligibilityScheduleRequests
+Content-type: application/json
+
+{
+    "action": "AdminAssign",
+    "justification": "Justification",
+    "roleDefinitionId": "Role-Definition-ID",
+    "directoryScopeId": "/",
+    "principalId": "Security-Group-ID",
+    "scheduleInfo": {
+        "startDateTime": "2022-11-07T00:00:00Z",
+        "expiration": {
+            "endDateTime": "2023-11-07T00:00:00Z",
+            "type": "AfterDateTime"
+        }
+    }
+}

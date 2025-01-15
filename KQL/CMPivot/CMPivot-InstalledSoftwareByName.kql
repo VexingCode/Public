@@ -1,0 +1,4 @@
+// Specific installed software on all devices
+
+InstalledSoftware
+| where ProductName == 'ProductName'

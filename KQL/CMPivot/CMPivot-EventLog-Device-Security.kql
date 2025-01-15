@@ -1,0 +1,5 @@
+// Security event log from device
+
+EventLog('Security') 
+| where (Device == 'DeviceName') 
+| order by DateTime desc

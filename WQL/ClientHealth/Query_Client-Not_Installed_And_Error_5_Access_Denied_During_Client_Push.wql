@@ -1,0 +1,22 @@
+select SMS_R_SYSTEM.ResourceID,
+    SMS_R_SYSTEM.ResourceType,
+    SMS_R_SYSTEM.Name,
+    SMS_R_SYSTEM.SMSUniqueIdentifier,
+    SMS_R_SYSTEM.ResourceDomainORWorkgroup,
+    SMS_R_SYSTEM.Client
+from SMS_R_System
+where SMS_R_System.Name in (
+        Select InsStrValue
+        from SMS_StatusMessage as stat
+            left outer join SMS_StatMsgAttributes as att on stat.recordid = att.recordid
+            left outer join SMS_StatMsgInsStrings as ins on stat.recordid = ins.recordid
+        WHERE (COMPONENT = "SMS_CLIENT_CONFIG_MANAGER")
+            AND MessageID = 3014
+            AND Win32Error = 5
+            AND DATEDIFF(day, stat.Time, GetDate()) < 7
+    )
+    and SMS_R_System.ResourceId not in (
+        select SMS_R_SYSTEM.ResourceID
+        from SMS_R_System
+        where SMS_R_System.Client = 1
+    )

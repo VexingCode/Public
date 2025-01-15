@@ -1,0 +1,10 @@
+select SYS1.ResourceID,
+    SYS1.ResourceType,
+    SYS1.Name,
+    SYS1.SMSUniqueIdentifier,
+    SYS1.ResourceDomainORWorkgroup,
+    SYS1.Client
+from SMS_R_System as SYS1
+    inner join SMS_R_System as SYS2 on SYS2.Name = SYS1.Name
+where SYS1.ResourceId != SYS2.ResourceId
+    and SYS1.Unknown is null

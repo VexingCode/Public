@@ -1,0 +1,1 @@
+Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -Match 'Microsoft.XboxGamingOverlay'} | Remove-AppxProvisionedPackage -Online -AllUsers

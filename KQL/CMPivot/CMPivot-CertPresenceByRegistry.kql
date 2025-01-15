@@ -1,0 +1,7 @@
+// Search the registry for certificate presense
+// Change {LOCATION} and {THUMBPRINTGUID} to match what you are looking for (do not include the {}'s)
+
+Device
+| join kind=leftouter (Registry('HKLM:\SOFTWARE\Microsoft\SystemCertificates\{LOCATION}\Certificates\{THUMBPRINTGUID}'))
+| where isnull(Key)
+| project Device

@@ -1,0 +1,4 @@
+// Get process on devices
+
+Process
+| where Name == 'explorer.exe'

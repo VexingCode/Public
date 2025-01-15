@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName WCF-HTTP-Activation).State

@@ -1,0 +1,5 @@
+// Devices with errors during Update Scan
+
+CCMLog ('UpdatesDeployment') 
+| where (LogText like '%0x87d00215%') 
+| distinct Device
