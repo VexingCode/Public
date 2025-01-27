@@ -25,10 +25,11 @@ Function New-IntuneApplicationGroup {
         It also has the option of creating all deployment type groups, if needed (unlikely).
 
         This parameter is a validated set, and the options are:
-            Available
-            Required
+            Available Install
+            Required Install
             Update
-            Uninstall
+            Available Uninstall
+            Required Uninstall
             All
     .PARAMETER DeploymentTarget
         Mandatory parameter to specify your deployment target for the group. It also has the 
@@ -89,13 +90,13 @@ Function New-IntuneApplicationGroup {
         This will create a required update deployment group, targeting devices, for the product specified.
         The end result(s) will appear as below:
 
-        Group name: MEM-Win-AUD-Contoso-Co-Example-Program-D
+        Group name: MEM-Win-AUP-Contoso-Co-Example-Program-D
         Group description: Required update group targeting devices, for the Contoso Co. Example Program application.
 
         If the "-ExclusionGroup Both" parameter|value is specified, the below group will also be
         created:
         
-        Group name: MEM-Win-AUD-ExGrp-Contoso-Co-Example-Program-D
+        Group name: MEM-Win-AUP-ExGrp-Contoso-Co-Example-Program-D
         Group description: Use for exclusions to the required update group targeting devices, for the Contoso Co. Example Program application.
     .EXAMPLE
         C:\> New-IntuneApplicationGroup -ProductVendor 'Contoso Co.' -ProductName 'Example Program' -DeploymentType Uninstall -DeploymentTarget Device -OperatingSystem Win (-ExclusionGroup Both)
@@ -157,7 +158,7 @@ Function New-IntuneApplicationGroup {
         [string]
         $ProductName,
         [Parameter(Mandatory,Position=2)]
-        [ValidateSet('Available','Required','Update','Uninstall','All')]
+        [ValidateSet('Available Install','Required Install','Update','Available Uninstall','Required Uninstall','All')]
         [string]
         $DeploymentType,
         [Parameter(Mandatory,Position=3)]
@@ -202,14 +203,15 @@ Function New-IntuneApplicationGroup {
     $cleanVendor = Clean-String -InputString $ProductVendor
     $cleanName = Clean-String -InputString $ProductName
 
-    $deploymentTypes = If ($DeploymentType -eq 'All') { 'Available', 'Required', 'Update', 'Uninstall' } Else { $DeploymentType }
+    $deploymentTypes = If ($DeploymentType -eq 'All') { 'Available Install','Required Install','Update','Available Uninstall','Required Uninstall' } Else { $DeploymentType }
     $deploymentTargets = If ($DeploymentTarget -eq 'Both') { 'Device', 'User' } Else { $DeploymentTarget }
 
     $typeMappings = @{
-        'Available' = @{ Name = 'AIA'; Desc = 'Available install' }
-        'Required'  = @{ Name = 'AIR'; Desc = 'Required install' }
-        'Update'    = @{ Name = 'AUD'; Desc = 'Required update' }
-        'Uninstall' = @{ Name = 'AUR'; Desc = 'Required uninstall' }
+        'Available Install'     = @{ Name = 'AIA'; Desc = 'Available install' }
+        'Required Install'      = @{ Name = 'AIR'; Desc = 'Required install' }
+        'Update'                = @{ Name = 'AUP'; Desc = 'Required update' }
+        'Available Uninstall'   = @{ Name = 'AUA'; Desc = 'Available uninstall' }
+        'Required Uninstall'    = @{ Name = 'AUR'; Desc = 'Required uninstall' }
     }
 
     $targetMappings = @{
@@ -225,6 +227,7 @@ Function New-IntuneApplicationGroup {
             $nameTgt = $targetMappings[$tgt].Name
             $descTgt = $targetMappings[$tgt].Desc
 
+            # Generate new group body
             $compiledName = "MEM-$OperatingSystem-$nameDT-$cleanVendor-$cleanName-$nameTgt"
             $compiledDesc = "$descDT group targeting $descTgt, for the $ProductVendor $ProductName application."
 
@@ -236,21 +239,29 @@ Function New-IntuneApplicationGroup {
                 SecurityEnabled = $true
             }
 
-            New-MgBetaGroup -Body $Body
+            # Generate new exclusion group body
+            $compiledNameEx = "MEM-$OperatingSystem-$nameDT-ExGrp-$cleanVendor-$cleanName-$nameTgt"
+            $compiledDescEx = "Use for exclusions to the $($descDT.ToLower()) group targeting $descTgt, for the $ProductVendor $ProductName application."
 
-            If ($ExclusionGroup -eq 'Yes' -or $ExclusionGroup -eq 'Both') {
-                $compiledNameEx = "MEM-$OperatingSystem-$nameDT-ExGrp-$cleanVendor-$cleanName-$nameTgt"
-                $compiledDescEx = "Use for exclusions to the $($descDT.ToLower()) group targeting $descTgt, for the $ProductVendor $ProductName application."
+            $BodyEx = @{
+                DisplayName     = $compiledNameEx
+                Description     = $compiledDescEx
+                MailEnabled     = $false
+                MailNickname    = 'NotSet'
+                SecurityEnabled = $true
+            }
 
-                $BodyEx = @{
-                    DisplayName     = $compiledNameEx
-                    Description     = $compiledDescEx
-                    MailEnabled     = $false
-                    MailNickname    = 'NotSet'
-                    SecurityEnabled = $true
-                }
-
+            If ($ExclusionGroup -eq 'Yes') {
+                # Create new group
                 New-MgBetaGroup -Body $BodyEx
+            } ElseIf ($ExclusionGroup -eq 'Both') {
+                # Create new group
+                New-MgBetaGroup -Body $Body
+                # Create new exclusion group
+                New-MgBetaGroup -Body $BodyEx
+            } Else {
+                # Create new exclusion group
+                New-MgBetaGroup -Body $Body
             }
         }
     }
