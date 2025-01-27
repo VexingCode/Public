@@ -6,7 +6,7 @@ Function New-IntuneApplicationGroup {
     .SYNOPSIS
         Function to standardize the creation of Application deployment groups for Intune.
     .DESCRIPTION
-        This function facilitations the creation of standardized groups for Application
+        This function facilitates the creation of standardized groups for Application
         deployments in Intune. It can create "Required" (AIR) and "Available" (AIA) install
         groups, as well as "Update" (AUD) and "Uninstall" (AUR) groups. Additionally, it
         can create exclusion groups (ExGrp) for each of those.
@@ -172,7 +172,16 @@ Function New-IntuneApplicationGroup {
         [Parameter(Position=5)]
         [ValidateSet('Yes','Both')]
         [string]
-        $ExclusionGroup
+        $ExclusionGroup,
+        [Parameter(Position=6)]
+        [switch]
+        $CMSync,
+        [Parameter(Position=7)]
+        [string]
+        $CMSyncCollectionId,
+        [Parameter(Position=8)]
+        [string]
+        $CMSyncCollectionName
     )
 
     If (!(Get-MgContext)) {
@@ -262,6 +271,26 @@ Function New-IntuneApplicationGroup {
             } Else {
                 # Create new exclusion group
                 New-MgBetaGroup -Body $Body
+            }
+            
+            # Check if CMSync is specified and both CMSyncCollectionId and CMSyncCollectionName are populated
+            If ($CMSync) {
+                If (-not $CMSyncCollectionId -or -not $CMSyncCollectionName) {
+                    Write-Host "Error: Both CMSyncCollectionId and CMSyncCollectionName must be specified when using -CMSync." -ForegroundColor Red
+                    return
+                }
+        
+                $Title = "MEM-CMSync-$ApplicationName"
+                Write-Host "Creating Intune application group with title: $Title"
+                Write-Host "CMSyncCollectionId: $CMSyncCollectionId"
+                Write-Host "CMSyncCollectionName: $CMSyncCollectionName"
+        
+                # Example placeholder for actual creation logic
+                # Add your creation logic here...
+        
+            } Else {
+                Write-Host "CMSync not specified. Group will not be created."
+                return
             }
         }
     }
