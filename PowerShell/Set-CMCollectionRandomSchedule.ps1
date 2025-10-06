@@ -1,34 +1,47 @@
-Function Set-CMCollectionRandomSchedule {
+Function Set-CMCollectionRefreshMode {
+    [CmdletBinding(DefaultParameterSetName = 'RandomSchedule')]
     param (
         [Parameter(Mandatory = $true)]
         [string[]]$CollectionIDs,
 
-        [Parameter(Mandatory = $true)]
-        [int]$IntervalDays
+        [Parameter(ParameterSetName = 'RandomSchedule')]
+        [int]$IntervalDays = 3,
+
+        [Parameter(ParameterSetName = 'DisableAll', Mandatory = $true)]
+        [switch]$DisableAll,
+
+        [Parameter(ParameterSetName = 'EnableIncremental', Mandatory = $true)]
+        [switch]$EnableIncremental
     )
 
     ForEach ($CollectionID in $CollectionIDs) {
-        $collection = Get-CMDeviceCollection -CollectionId $CollectionID
+        $collection = Get-CMCollection -Id $CollectionID
         If (-not $collection) {
             Write-Warning "CollectionID '$CollectionID' not found."
             continue
         }
 
-        # Disable incremental updates
-        $collection.RefreshType = 2  # 2 = Full Update on schedule only
-        $collection.Put()
+        switch ($PSCmdlet.ParameterSetName) {
+            'DisableAll' {
+                Set-CMCollection -CollectionId $CollectionID -RefreshType Manual
+                Write-Output "Disabled all updates for '$($collection.Name)'"
+            }
 
-        # Generate randomized schedule time
-        $randomHour = Get-Random -Minimum 0 -Maximum 24
-        $randomMinute = Get-Random -Minimum 0 -Maximum 60
-        $startTime = [datetime]::Today.AddHours($randomHour).AddMinutes($randomMinute)
+            'EnableIncremental' {
+                Set-CMCollection -CollectionId $CollectionID -RefreshType Continuous
+                Write-Output "Enabled incremental updates for '$($collection.Name)'"
+            }
 
-        # Create a new schedule token
-        $schedule = New-CMSchedule -RecurInterval Days -RecurCount $IntervalDays -Start $startTime
+            'RandomSchedule' {
+                $randomHour = Get-Random -Minimum 0 -Maximum 24
+                $randomMinute = Get-Random -Minimum 0 -Maximum 60
+                $startTime = [datetime]::Today.AddHours($randomHour).AddMinutes($randomMinute)
 
-        # Apply the schedule
-        Set-CMDeviceCollection -CollectionId $CollectionID -RefreshSchedule $schedule
+                $schedule = New-CMSchedule -RecurInterval Days -RecurCount $IntervalDays -Start $startTime
 
-        Write-Output "Updated '$($collection.Name)' with full update every $IntervalDays day(s) at $($startTime.ToShortTimeString())"
+                Set-CMCollection -CollectionId $CollectionID -RefreshType Periodic -RefreshSchedule $schedule
+                Write-Output "Set randomized full refresh for '$($collection.Name)' every $IntervalDays day(s) at $($startTime.ToShortTimeString())"
+            }
+        }
     }
 }
