@@ -1,0 +1,5 @@
+// Active TCP connection from specific client to specific server
+
+Connection 
+| where Device == 'DeviceName' 
+| where Server == 'ServerName'

@@ -1,0 +1,8 @@
+// Installed features on a device
+
+OptionalFeature 
+| where Device == 'DeviceName'
+| where Caption == 'Feature Name'
+// Alternatively, Name
+// | where Name == 'FeatureName'
+| where InstallState == 1

@@ -1,0 +1,2 @@
+# Public/Kusto
+Kusto queries.

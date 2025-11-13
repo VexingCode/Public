@@ -1,0 +1,5 @@
+// Devices with the DNS Server feature installed
+
+OptionalFeature
+| where Caption == 'DNS Server'
+| where InstallState ==1

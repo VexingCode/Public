@@ -1,0 +1,1 @@
+Enable-WindowsOptionalFeature -Online -FeatureName BITS-Compact-Server -All

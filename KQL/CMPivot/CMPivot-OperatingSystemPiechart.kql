@@ -1,0 +1,5 @@
+// Operating Systems, with device count, pie chart
+
+OperatingSystem
+| summarize count() by strcat(Caption, ' ', BuildNumber) 
+| render piechart

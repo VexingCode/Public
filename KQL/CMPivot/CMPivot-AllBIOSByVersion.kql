@@ -1,0 +1,6 @@
+// Count of all BIOS by Version (SMBIOSBIOSVersion)
+
+Bios 
+| project Device, SMBIOSBIOSVersion, Version, Manufacturer
+| summarize dcount( Device ) by SMBIOSBIOSVersion, Version, Manufacturer
+| order by SMBIOSBIOSVersion desc

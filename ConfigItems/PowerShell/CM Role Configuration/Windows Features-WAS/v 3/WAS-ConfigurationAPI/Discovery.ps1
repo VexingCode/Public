@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName WAS-ConfigurationAPI).State

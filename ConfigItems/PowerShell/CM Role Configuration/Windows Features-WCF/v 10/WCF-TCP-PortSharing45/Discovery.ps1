@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName WCF-TCP-PortSharing45).State

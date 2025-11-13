@@ -1,0 +1,18 @@
+{
+  "Rules": [
+    {
+      "SettingName": "ESUStatus",
+      "Operator": "NotEquals",
+      "DataType": "String",
+      "Operand": "Unlicensed",
+      "MoreInfoUrl": "https://learn.microsoft.com/en-us/windows/whats-new/extended-security-updates",
+      "RemediationStrings": [
+        {
+          "Language": "en_US",
+          "Title": "Your device is not compliant.",
+          "Description": "Your Windows 10 device does not have a valid ESU license. Please upgrade to Windows 11 or contact IT to request an ESU license."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+// Device Manufacturer, Model, and BaseBoard Product
+
+Device
+| join BaseBoard
+| distinct Manufacturer, Model, Product
+| order by Manufacturer asc

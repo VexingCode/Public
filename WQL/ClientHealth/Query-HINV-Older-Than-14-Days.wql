@@ -1,0 +1,14 @@
+select SMS_R_SYSTEM.ResourceID,
+    SMS_R_SYSTEM.ResourceType,
+    SMS_R_SYSTEM.Name,
+    SMS_R_SYSTEM.SMSUniqueIdentifier,
+    SMS_R_SYSTEM.ResourceDomainORWorkgroup,
+    SMS_R_SYSTEM.Client
+from SMS_R_System
+    inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceID = SMS_R_System.ResourceId
+where SMS_G_System_COMPUTER_SYSTEM.Name not in (
+        select SMS_R_System.Name
+        from SMS_R_System
+            inner join SMS_G_System_WORKSTATION_STATUS on SMS_G_System_WORKSTATION_STATUS.ResourceID = SMS_R_System.ResourceId
+        where SMS_G_System_WORKSTATION_STATUS.LastHardwareScan >= DateAdd(dd, -14, GetDate())
+    )

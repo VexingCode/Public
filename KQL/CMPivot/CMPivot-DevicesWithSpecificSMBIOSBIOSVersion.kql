@@ -1,0 +1,4 @@
+// Find devices with specific BIOS Version (SMBIOSBIOSVersion)
+
+Bios 
+| where Version == 'SMBIOSBIOSVERSION'

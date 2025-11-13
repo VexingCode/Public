@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName WCF-Pipe-Activation45).State

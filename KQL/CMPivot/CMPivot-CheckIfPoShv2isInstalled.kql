@@ -1,0 +1,5 @@
+// PowerShell v2 Installation Status
+
+OptionalFeature
+| where (Name == 'MicrosoftWindowsPowerShellV2')
+| where InstallState == 1

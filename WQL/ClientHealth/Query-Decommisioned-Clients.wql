@@ -1,0 +1,9 @@
+select SYSTEM.ResourceID,
+    SYSTEM.ResourceType,
+    SYSTEM.Name,
+    SYSTEM.SMSUniqueIdentifier,
+    SYSTEM.ResourceDomainORWorkgroup,
+    SYSTEM.Client
+from SMS_R_System as system
+    join SMS_FullCollectionMembership as collection on system.ResourceID = collection.ResourceID
+where collection.IsDecommissioned = 1

@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45).State

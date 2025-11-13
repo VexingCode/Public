@@ -1,0 +1,24 @@
+select SYS.ResourceID,
+    SYS.ResourceType,
+    SYS.Name,
+    SYS.SMSUniqueIdentifier,
+    SYS.ResourceDomainORWorkgroup,
+    SYS.Client
+from sms_r_system as SYS
+    inner join SMS_G_System_SOFTWARE_LICENSING_PRODUCT on SMS_G_System_SOFTWARE_LICENSING_PRODUCT.ResourceID = SYS.ResourceId
+WHERE PartialProductKey is not null
+    and not (
+        (
+            DiscoveredKeyManagementServiceMachineName is not null
+            and DiscoveredKeyManagementServiceMachineName != ''
+        )
+        or (
+            KeyManagementServiceLookupDomain is not null
+            and KeyManagementServiceLookupDomain != ''
+        )
+        or (
+            KeyManagementServiceMachine is not null
+            and KeyManagementServiceMachine != ''
+        )
+        or IsKeyManagementServiceMachine = 1
+    )

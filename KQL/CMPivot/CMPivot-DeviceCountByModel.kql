@@ -1,0 +1,5 @@
+// Device count by Model
+
+Device
+| summarize dcount( Device ) by Model, Manufacturer
+| order by Model asc

@@ -1,0 +1,3 @@
+// List all values for specific HKLM regkey
+
+Registry('hklm:\Registry\Key')

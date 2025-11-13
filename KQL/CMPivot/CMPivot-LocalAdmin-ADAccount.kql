@@ -1,0 +1,11 @@
+// List all Active Directory Users that are Administrators of a machine
+
+Administrators
+| where (ObjectClass == 'User')
+| where (PrinicpalSource == 'ActiveDirectory')
+// Uncomment below to add exclusions
+// Single
+// | where Name !like '%Domain Admins'
+// Multiple
+// | where Name !like '%Domain Admins'
+// | where Name !like '%Workstation-Admins'

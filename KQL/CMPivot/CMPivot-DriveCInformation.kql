@@ -1,0 +1,7 @@
+// Device C: drive information
+
+LogicalDisk
+| where Description == 'Local Fixed Disk'
+| where DeviceID == 'C:'
+| project Device, DeviceID, Description, FileSystem, Size=Size/1024, FreeSpace=FreeSpace/1024, VolumeName, VolumeSerialNumber
+| order by DeviceID asc

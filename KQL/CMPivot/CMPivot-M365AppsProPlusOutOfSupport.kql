@@ -1,0 +1,4 @@
+// Microsoft 365 Apps for Enterprise ProPlus Out of Support
+
+Office365ProPlusConfigurations 
+| where VersionToReport < '16.0.12827.20656' and cfgUpdateChannel == 'http://officecdn.microsoft.com/pr/55336b82-a18d-4dd6-b5f6-9e5095c314a6'

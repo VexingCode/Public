@@ -1,0 +1,4 @@
+// Get File info on specific device
+
+File('C:\Folder\File.exe')
+| where Device == 'DeviceName'

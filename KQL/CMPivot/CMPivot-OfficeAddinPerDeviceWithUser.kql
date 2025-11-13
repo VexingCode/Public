@@ -1,0 +1,6 @@
+// Office Add-in per device, with username
+
+OfficeAddin 
+| where ProductName like 'Add-in Name' 
+| join Device 
+| project UserName, FileName, Device, ProductName, ProductVersion

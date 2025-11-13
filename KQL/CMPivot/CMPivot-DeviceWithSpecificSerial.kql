@@ -1,0 +1,4 @@
+// Device with specific serial
+
+Bios 
+| where SerialNumber == 'SERIAL'

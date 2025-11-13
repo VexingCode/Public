@@ -1,0 +1,6 @@
+// Devices with file older than (X) days
+// Sub "365" for "older than"
+
+File('C:\Folder\File.sys')
+| where LastWriteTime < ago(365d)
+| project Device, FileName, LastWriteTime

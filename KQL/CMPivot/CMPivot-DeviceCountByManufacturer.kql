@@ -1,0 +1,4 @@
+// Device count by Manufacturer
+
+Device 
+| summarize dcount( Device ) by Manufacturer

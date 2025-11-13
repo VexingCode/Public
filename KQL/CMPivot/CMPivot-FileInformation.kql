@@ -1,0 +1,3 @@
+// Get File information
+
+File('C:\Folder\File.exe')

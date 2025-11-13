@@ -1,0 +1,1 @@
+Enable-WindowsOptionalFeature -Online -FeatureName WCF-TCP-PortSharing45 -All

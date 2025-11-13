@@ -1,0 +1,4 @@
+// Client with GUID 0000
+
+FileContent('c:\Windows\smscfg.ini')
+| where Content contains 'Previous SMSUID=GUID:00000000-0000-0000-0000-000000000000'

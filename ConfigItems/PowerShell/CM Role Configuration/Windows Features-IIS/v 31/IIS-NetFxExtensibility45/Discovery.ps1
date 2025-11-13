@@ -1,0 +1,1 @@
+(Get-WindowsOptionalFeature -Online -FeatureName IIS-NetFxExtensibility45).State

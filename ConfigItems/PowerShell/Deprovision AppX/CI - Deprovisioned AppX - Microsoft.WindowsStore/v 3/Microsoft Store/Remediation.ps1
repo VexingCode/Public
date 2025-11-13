@@ -1,0 +1,1 @@
+Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -Match 'Microsoft.WindowsStore'} | Remove-AppxProvisionedPackage -Online -AllUsers

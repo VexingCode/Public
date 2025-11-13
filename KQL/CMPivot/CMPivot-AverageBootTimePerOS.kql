@@ -1,0 +1,6 @@
+// Average boot time per OS
+
+SystemBootData
+| join OperatingSystem 
+| summarize avg(BootDuration / 1000) by Caption
+| render barchart with (kind=stacked, title='Average Boot Times', ytitle='Time (seconds)')

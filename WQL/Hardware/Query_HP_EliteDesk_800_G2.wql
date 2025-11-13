@@ -1,0 +1,21 @@
+select SMS_R_SYSTEM.ResourceID,
+    SMS_R_SYSTEM.ResourceType,
+    SMS_R_SYSTEM.Name,
+    SMS_R_SYSTEM.SMSUniqueIdentifier,
+    SMS_R_SYSTEM.ResourceDomainORWorkgroup,
+    SMS_R_SYSTEM.Client
+from SMS_R_System
+    inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceId = SMS_R_System.ResourceId
+where SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteDesk 800 G2 DM 35W"
+    or
+SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteDesk 800 G2 Mini 35W"
+    or
+SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteDesk 800 35W G2 Desktop Mini PC"
+    or
+SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteDesk 800 G2 DM 65W"
+    or
+SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteDesk 800 G2 Mini 65W"
+    or
+SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteDesk 800 G2 SFF"
+    or
+SMS_G_System_COMPUTER_SYSTEM.Model = "HP EliteDesk 800 G2 TWR"

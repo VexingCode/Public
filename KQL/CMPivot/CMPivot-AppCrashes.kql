@@ -1,0 +1,4 @@
+// App crashes, summarized device count, by filename
+
+AppCrash
+| summarize dcount( Device ) by FileName

@@ -1,0 +1,5 @@
+// ExecMgr duplicate execution requests
+
+CcmLog('execmgr', 7d)
+| where LogText like 'A duplicate execution request is found for program%'
+| project Device, LogText, DateTime

@@ -1,0 +1,1 @@
+Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -Match 'Microsoft.MicrosoftSolitaireCollection'} | Remove-AppxProvisionedPackage -Online -AllUsers

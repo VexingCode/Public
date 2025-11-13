@@ -1,0 +1,6 @@
+// IP Ranges for Cisco AnyConnect; barchart
+
+IPConfig 
+| where InterfaceDescription like 'Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64' 
+| summarize count() by substring(IPV4Address, 0, 9) 
+| render barchart with (title='AnyConnect Subnet Assignment', xtitle='Subnet', ytitle='Number of Devices')

@@ -1,0 +1,1 @@
+Enable-WindowsOptionalFeature -Online -FeatureName WCF-NonHTTP-Activation -All

@@ -1,0 +1,9 @@
+select SYS1.ResourceID,
+    SYS1.ResourceType,
+    SYS1.Name,
+    SYS1.SMSUniqueIdentifier,
+    SYS1.ResourceDomainORWorkgroup,
+    SYS1.Client
+from SMS_R_System as SYS1
+    LEFT JOIN SMS_R_System as SYS2 ON SYS1.HardwareID = SYS2.HardwareID
+where SYS1.ResourceID != SYS2.ResourceID

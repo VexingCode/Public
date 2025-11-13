@@ -1,0 +1,4 @@
+// Active file share info for a device
+
+FileShare
+| where Device == 'DeviceName'

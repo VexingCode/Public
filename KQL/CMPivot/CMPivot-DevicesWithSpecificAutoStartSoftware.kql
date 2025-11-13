@@ -1,0 +1,4 @@
+// Devices with specific software in AutoStart
+
+AutoStartSoftware 
+| where (Product == 'ProductName')

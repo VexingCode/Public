@@ -1,0 +1,1 @@
+Enable-WindowsOptionalFeature -Online -FeatureName WCF-Pipe-Activation45 -All

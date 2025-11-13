@@ -1,0 +1,2 @@
+# Public/WQL
+WQL queries.

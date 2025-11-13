@@ -1,0 +1,5 @@
+// Devices with specific architecture
+// Values: 64-bit, 32-bit
+
+OS 
+| where OSArchitecture == '##-bit'

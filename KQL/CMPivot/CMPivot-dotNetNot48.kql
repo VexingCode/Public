@@ -1,0 +1,7 @@
+// Get .NET versions that are NOT 4.8
+
+Registry('HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client') 
+| where Property == 'Release' 
+| where Value != '528040' 
+| where Value != '528372' 
+| where Value != '528049'

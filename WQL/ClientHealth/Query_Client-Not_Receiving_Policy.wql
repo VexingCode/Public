@@ -1,0 +1,15 @@
+select SMS_R_SYSTEM.ResourceID,
+    SMS_R_SYSTEM.ResourceType,
+    SMS_R_SYSTEM.Name,
+    SMS_R_SYSTEM.SMSUniqueIdentifier,
+    SMS_R_SYSTEM.ResourceDomainORWorkgroup,
+    SMS_R_SYSTEM.Client
+from SMS_R_System
+where SMS_R_System.SMSUniqueIdentifier in (
+        select instr.insstrvalue
+        from SMS_StatusMessage as sm
+            join SMS_StatInsStr as instr on sm.recordid = instr.recordid
+        where sm.messageid Is In(5444, 5445, 5446, 5447, 5448, 5449)
+            and instr.insstrvalue like "GUID%"
+            and DateDiff(dd, sm.Time, GetDate()) < 7
+    )

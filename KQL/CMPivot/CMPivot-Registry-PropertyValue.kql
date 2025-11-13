@@ -1,0 +1,4 @@
+// Get the value of a specific registry key property
+
+Registry('hklm:\Registry\Key')
+| where Property == 'PropertyName'

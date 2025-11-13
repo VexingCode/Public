@@ -1,0 +1,13 @@
+select SMS_R_SYSTEM.ResourceID,
+    SMS_R_SYSTEM.ResourceType,
+    SMS_R_SYSTEM.Name,
+    SMS_R_SYSTEM.SMSUniqueIdentifier,
+    SMS_R_SYSTEM.ResourceDomainORWorkgroup,
+    SMS_R_SYSTEM.Client
+from SMS_R_System
+    inner join SMS_G_System_SERVICE on SMS_G_System_SERVICE.ResourceID = SMS_R_System.ResourceId
+where SMS_G_System_SERVICE.Name = "CmRcService"
+    and (
+        SMS_G_System_SERVICE.StartMode != "Auto"
+        or SMS_G_System_SERVICE.State != "Running"
+    )

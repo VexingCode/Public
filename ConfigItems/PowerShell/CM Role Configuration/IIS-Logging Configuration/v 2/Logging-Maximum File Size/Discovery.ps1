@@ -1,0 +1,1 @@
+(Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile" -name "truncateSize").Value

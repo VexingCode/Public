@@ -1,0 +1,8 @@
+let OSFN = externaldata (OSMajorVersion:string, OSFriendyName:string)
+[@'https://raw.githubusercontent.com/VexingCode/Public/main/KQL/Intune/WindowsBuilds-Simple.csv']
+with(format='csv', ignoreFirstRecord=true);
+IntuneDevices
+| where OSCaption contains 'Windows'
+| join kind=inner (OSFN) on $left.OSVersion == $right.OSMajorVersion
+| summarize count() by OSFriendyName
+| render piechart with (title='Device count by friendly version.')

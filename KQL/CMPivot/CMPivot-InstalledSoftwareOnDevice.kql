@@ -1,0 +1,4 @@
+// List installed applications on a device
+
+InstalledSoftware
+| where Device == 'DeviceName'

@@ -1,0 +1,12 @@
+select SYS.ResourceID,
+    SYS.ResourceType,
+    SYS.Name,
+    SYS.SMSUniqueIdentifier,
+    SYS.ResourceDomainORWorkgroup,
+    SYS.Client
+from sms_r_system as SYS
+    join SMS_StatusMessage as stat on stat.machinename = SYS.name
+    OR stat.machinename = SYS.NetbiosName
+where stat.ModuleName = "SMS Client"
+    and stat.MessageID = 669
+    and DateDiff(dd, stat.Time, GetDate()) < 7

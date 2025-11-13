@@ -1,0 +1,5 @@
+// Microsoft 365 Apps for Enterprise Channels
+
+OfficeProductInfo 
+| summarize count() by Channel, ProductName 
+| where channel != 'Unknown'

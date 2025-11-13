@@ -1,0 +1,6 @@
+// DNS Server List barchart
+
+IPConfig 
+| where (Status == 'Up') 
+| summarize count() by DNSServerList 
+| render barchart

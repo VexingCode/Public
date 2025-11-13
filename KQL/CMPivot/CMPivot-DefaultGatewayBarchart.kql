@@ -1,0 +1,6 @@
+// Default Gateways rendered as a barchart
+
+IPConfig
+| where (Status=='UP')
+| summarize count() by IPV4DefaultGateway 
+| render barchart

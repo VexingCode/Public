@@ -1,0 +1,6 @@
+select SMS_R_UNKNOWNSYSTEM.ResourceID,
+    SMS_R_UNKNOWNSYSTEM.ResourceType,
+    SMS_R_UNKNOWNSYSTEM.Name,
+    SMS_R_UNKNOWNSYSTEM.Name,
+    SMS_R_UNKNOWNSYSTEM.Name
+from SMS_R_UnknownSystem
