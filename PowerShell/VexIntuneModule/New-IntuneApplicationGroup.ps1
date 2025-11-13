@@ -1,7 +1,5 @@
 Function New-IntuneApplicationGroup {
 
-    #Requires -Modules Microsoft.Graph.Beta.Groups
-
     <#
     .SYNOPSIS
         Function to standardize the creation of Application deployment groups for Intune.
@@ -172,16 +170,7 @@ Function New-IntuneApplicationGroup {
         [Parameter(Position=5)]
         [ValidateSet('Yes','Both')]
         [string]
-        $ExclusionGroup,
-        [Parameter(Position=6)]
-        [switch]
-        $CMSync,
-        [Parameter(Position=7)]
-        [string]
-        $CMSyncCollectionId,
-        [Parameter(Position=8)]
-        [string]
-        $CMSyncCollectionName
+        $ExclusionGroup
     )
 
     If (!(Get-MgContext)) {
@@ -249,7 +238,7 @@ Function New-IntuneApplicationGroup {
             }
 
             # Generate new exclusion group body
-            $compiledNameEx = "MEM-$OperatingSystem-$nameDT-ExGrp-$cleanVendor-$cleanName-$nameTgt"
+            $compiledNameEx = "MEM-$OperatingSystem-$nameDT-$cleanVendor-$cleanName-ExGrp-$nameTgt"
             $compiledDescEx = "Use for exclusions to the $($descDT.ToLower()) group targeting $descTgt, for the $ProductVendor $ProductName application."
 
             $BodyEx = @{
@@ -271,26 +260,6 @@ Function New-IntuneApplicationGroup {
             } Else {
                 # Create new exclusion group
                 New-MgBetaGroup -Body $Body
-            }
-            
-            # Check if CMSync is specified and both CMSyncCollectionId and CMSyncCollectionName are populated
-            If ($CMSync) {
-                If (-not $CMSyncCollectionId -or -not $CMSyncCollectionName) {
-                    Write-Host "Error: Both CMSyncCollectionId and CMSyncCollectionName must be specified when using -CMSync." -ForegroundColor Red
-                    return
-                }
-        
-                $Title = "MEM-CMSync-$ApplicationName"
-                Write-Host "Creating Intune application group with title: $Title"
-                Write-Host "CMSyncCollectionId: $CMSyncCollectionId"
-                Write-Host "CMSyncCollectionName: $CMSyncCollectionName"
-        
-                # Example placeholder for actual creation logic
-                # Add your creation logic here...
-        
-            } Else {
-                Write-Host "CMSync not specified. Group will not be created."
-                return
             }
         }
     }

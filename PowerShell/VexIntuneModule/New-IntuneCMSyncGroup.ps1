@@ -1,7 +1,5 @@
 Function New-IntuneCMSyncGroup {
 
-    #Requires -Modules Microsoft.Graph.Beta.Groups
-
     <#
     .SYNOPSIS
         Function to (somewhat) standardize the creation of the CMSync groups in Entra.

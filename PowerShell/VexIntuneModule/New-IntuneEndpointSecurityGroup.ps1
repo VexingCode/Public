@@ -1,7 +1,5 @@
 Function New-IntuneEndpointSecurityGroup {
-
-    #Requires -Modules Microsoft.Graph.Beta.Groups
-
+    
     <#
     .SYNOPSIS
         Creates a new Intune Endpoint Security group.
@@ -277,11 +275,11 @@ Function New-IntuneEndpointSecurityGroup {
     $SettingValue = $settingValues[$Entity]
     $TargetValue = If ($DeploymentTarget -eq 'Device') { 'D' } Else { 'U' }
 
-    $GroupName = Clean-String -String "MEM-$OSValue-ES-$EntityValue-$SettingValue-$Purpose-$TargetValue"
+    $GroupName = "MEM-$OSValue-ES-$EntityValue-$SettingValue-$Purpose-$TargetValue"
     $compiledDesc = "Endpoint Security group for the $SettingValue $Entity setting, targeting $($DeploymentTarget.ToLower() + 's')."
 
     If ($Exclusion -eq 'Yes' -or $Exclusion -eq 'Both') {
-        $ExGroupName = Clean-String -String "MEM-$OSValue-ES-$EntityValue-$SettingValue-ExGrp-$Purpose-$TargetValue"
+        $ExGroupName = "MEM-$OSValue-ES-$EntityValue-$SettingValue-$Purpose-ExGrp-$TargetValue"
         $ExGroupDesc = "Use for exclusions to the $SettingValue $Entity setting group, targeting $($DeploymentTarget.ToLower() + 's')."
 
         Write-Output "Exclusion Group Name: $ExGroupName"
