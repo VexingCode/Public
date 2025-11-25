@@ -7,6 +7,8 @@ Function Invoke-UserBasedChromeCleanup {
         Runs in detection mode by default. If -Remediate is specified, it attempts
         to remove Chrome artifacts. The -Force parameter is only available in the
         Remediate parameter set, allowing cleanup even if the profile is in use.
+        The -Intune switch controls whether exit codes are triggered (for Intune)
+        or just output is shown (for manual testing).
 
     .PARAMETER Remediate
         Switch to perform remediation (delete Chrome artifacts). 
@@ -15,6 +17,13 @@ Function Invoke-UserBasedChromeCleanup {
     .PARAMETER Force
         Switch to force remediation even if profile is in use.
         Only available when -Remediate is specified.
+
+        WARNING: Using -Force may lead to incomplete cleanup since some files, as
+        well as the registry, are locked.
+
+    .PARAMETER Intune
+        Switch to trigger exit codes for Intune compliance/remediation.
+        If omitted, only Write-Host output is shown (no exit).
     #>
 
     [CmdletBinding(DefaultParameterSetName="Detect")]
@@ -23,7 +32,9 @@ Function Invoke-UserBasedChromeCleanup {
         [switch]$Remediate,
 
         [Parameter(ParameterSetName="Remediate")]
-        [switch]$Force
+        [switch]$Force,
+
+        [switch]$Intune
     )
 
     Write-Host "Checking for user-level Google Chrome installs..." -ForegroundColor Cyan
@@ -165,12 +176,14 @@ Function Invoke-UserBasedChromeCleanup {
 
     Write-Host "Chrome detection/remediation complete." -ForegroundColor Cyan
 
-    # Exit appropriately for Intune
-    If ($remediationFailed) {
-        exit 1
-    } ElseIf ($remediationNeeded) {
-        exit 1  # detection or remediation required
-    } Else {
-        exit 0  # nothing to remediate
+    # Exit codes only if -Intune is specified
+    If ($Intune) {
+        If ($remediationFailed) {
+            exit 1
+        } ElseIf ($remediationNeeded) {
+            exit 1  # detection or remediation required
+        } Else {
+            exit 0  # nothing to remediate
+        }
     }
 }
